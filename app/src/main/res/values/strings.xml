@@ -1,4 +1,28 @@
 <resources>
     <string name="app_name">StarWars</string>
     <string name="action_settings">Settings</string>
+    <string name="star_wars_intro">All the Star Wars data \n you\'ve ever wanted\n Planets, Spaceships, Vehicles,\n  People, Films and Species \n From all SEVEN Star Wars films\nNow with The Force\n  Awakens data</string>
+    <string name="show_all_movies">Show all Movies</string>
+    <string name="show_all_characters">Show all Characters</string>
+    <string name="show_all_planets">Show all Planets</string>
+    <string name="show_all_vehicles">Show all Vehicles</string>
+    <string name="show_all_starships">Show all Starships</string>
+    <string name="show_all_species">Show all Species</string>
+    <string name="card_name">Name: %1$s</string>
+    <string name="card_title">Title: %1$s</string>
+    <string name="card_release_date">Release Date: %1$s</string>
+    <string name="card_opening_crawl">Opening Crawl \n %1$s</string>
+    <string name="card_gender">Gender: %1$s</string>
+    <string name="card_birth_year">Date of birth %1$s</string>
+    <string name="card_skin_color">Skin color: %1$s</string>
+    <string name="card_diameter">Diameter: %1$s</string>
+    <string name="card_gravity">Gravity: %1$s</string>
+    <string name="card_terrain">Terrain: %1$s</string>
+    <string name="card_classification">Classification: %1$s</string>
+    <string name="card_language">Language: %1$s</string>
+    <string name="card_designation">Designation: %1$s</string>
+    <string name="card_crew">Crew: %1$s</string>
+    <string name="card_passenger">Passenger: %1$s</string>
+    <string name="card_hyper_drive_rating">HyperDriveRating: %1$s</string>
+    <string name="card_vehicle_class">Vehicle class: %1$s</string>
 </resources>

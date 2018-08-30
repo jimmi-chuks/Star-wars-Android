@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorAccent">@color/primaryLightColor</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -16,5 +16,41 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="home_button_style">
+        <item name="android:tint">@color/primaryDarkColor</item> <item name="android:textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+
+
+    <style name="home_recycler_view_style">
+        <item name="android:background">@color/primaryDarkColor</item>
+        <item name="android:layout_height">200dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+
+    <style name="recycler_view_item_style">
+        <item name="android:background">@color/primaryColor</item>
+        <item name="android:textColor">@color/homeRecyclerViewTextColor</item>
+    </style>
+
+    <style name="card_view_small">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <style name="film_home_recycler_view_style">
+        <item name="android:layout_height">250dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
 
 </resources>
