@@ -5,26 +5,26 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
 import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider;
-import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase;
+import com.dani_chuks.andeladeveloper.starwars.home.HomeViewModelInteractor;
 
 public class HomeViewModelFactory implements ViewModelProvider.Factory {
 
     @NonNull
-    final ISchedulerProvider schedulerProvider;
+    private final ISchedulerProvider schedulerProvider;
     @NonNull
-    private final AppDatabase appDatabase;
+    private final HomeViewModelInteractor viewModelInteractor;
 
-    public HomeViewModelFactory(@NonNull final AppDatabase appDatabase,
+    public HomeViewModelFactory(@NonNull final HomeViewModelInteractor viewModelInteractor,
                                 @NonNull final ISchedulerProvider schedulerProvider) {
         this.schedulerProvider = schedulerProvider;
-        this.appDatabase = appDatabase;
+        this.viewModelInteractor = viewModelInteractor;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull final Class<T> modelClass) {
         if (modelClass.isAssignableFrom(HomeViewModel.class)) {
-            return (T) new HomeViewModel(appDatabase, schedulerProvider);
+            return (T) new HomeViewModel(viewModelInteractor, schedulerProvider);
         }
         throw new IllegalArgumentException("Unknown ViewModel Class");
     }

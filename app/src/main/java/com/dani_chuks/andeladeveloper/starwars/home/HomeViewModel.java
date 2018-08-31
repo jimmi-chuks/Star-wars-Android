@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 
 import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider;
-import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Person;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Planet;
@@ -15,6 +14,8 @@ import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Vehicle;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.CompositeDisposable;
 
 public class HomeViewModel extends ViewModel {
@@ -22,7 +23,7 @@ public class HomeViewModel extends ViewModel {
     @NonNull
     final ISchedulerProvider schedulerProvider;
     @NonNull
-    private final AppDatabase appDatabase;
+    private final HomeViewModelInteractor interactor;
     private MutableLiveData<List<Film>> films = new MutableLiveData<>();
     private MutableLiveData<List<Person>> people = new MutableLiveData<>();
     private MutableLiveData<List<Planet>> planets = new MutableLiveData<>();
@@ -31,9 +32,10 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<List<Vehicle>> vehicles = new MutableLiveData<>();
     private CompositeDisposable disposableManager = new CompositeDisposable();
 
-    public HomeViewModel(@NonNull final AppDatabase appDatabase,
+    @Inject
+    public HomeViewModel(@NonNull final HomeViewModelInteractor interactor,
                          @NonNull final ISchedulerProvider schedulerProvider) {
-        this.appDatabase = appDatabase;
+        this.interactor = interactor;
         this.schedulerProvider = schedulerProvider;
     }
 
@@ -87,8 +89,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadFilms() {
         disposableManager.add(
-                appDatabase.filmDao()
-                        .getFirstSeven()
+                interactor.loadFilms()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
                         .subscribe(response -> this.films.setValue(response)));
@@ -96,8 +97,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadPeople() {
         disposableManager.add(
-                appDatabase.personDao()
-                        .getFirstSeven()
+                interactor.loadPeople()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
                         .subscribe(response -> this.people.setValue(response))
@@ -106,8 +106,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadPlanets() {
         disposableManager.add(
-                appDatabase.planetDao()
-                        .getFirstSeven()
+                interactor.loadPlanets()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
                         .subscribe(response -> this.planets.setValue(response))
@@ -116,8 +115,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadSpecies() {
         disposableManager.add(
-                appDatabase.specieDao()
-                        .getAll()
+                interactor.loadSpecies()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
                         .subscribe(response -> this.species.setValue(response))
@@ -126,8 +124,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadVehicles() {
         disposableManager.add(
-                appDatabase.vehicleDao()
-                        .getFirstSeven()
+                interactor.loadVehicles()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
                         .subscribe(response -> this.vehicles.setValue(response))
@@ -136,8 +133,7 @@ public class HomeViewModel extends ViewModel {
 
     private void loadStarships() {
         disposableManager.add(
-                appDatabase.starshipDao()
-                        .getFirstSeven()
+                interactor.loadStarships()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
                         .subscribe(response -> this.starships.setValue(response))

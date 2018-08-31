@@ -1,4 +1,4 @@
-package com.dani_chuks.andeladeveloper.starwars.data.db.local;
+package com.dani_chuks.andeladeveloper.starwars.data.db.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -17,8 +17,8 @@ public interface PlanetDao {
     @Query("SELECT * FROM planet")
     Flowable<List<Planet>> getAll();
 
-    @Query("SELECT * FROM planet LIMIT 7")
-    Flowable<List<Planet>> getFirstSeven();
+    @Query("SELECT * FROM planet LIMIT :size")
+    Flowable<List<Planet>> getItemBySize(int size);
 
     @Query("SELECT * FROM planet ORDER BY name ASC" )
     Flowable<List<Planet>> getAllAlphabetically();
@@ -33,10 +33,10 @@ public interface PlanetDao {
     void updateplanets(List<Planet> planetList);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long[] insertplanet(List<Planet> planetList);
+    long[] insertPlanetList(List<Planet> planetList);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertplanet(Planet planet);
+    void insertPlanet(Planet planet);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateplanet(Planet planet);

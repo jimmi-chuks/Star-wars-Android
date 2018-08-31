@@ -13,11 +13,14 @@ import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.IoScheduler;
 import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.MainScheduler;
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants;
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager;
-import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource;
-import com.dani_chuks.andeladeveloper.starwars.data.db.Repository;
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase;
-import com.dani_chuks.andeladeveloper.starwars.data.db.local.LocalDataSource;
 import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService;
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.FilmRepository;
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.PersonRepository;
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.PlanetRepository;
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.SpecieRepository;
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.StarshipRepository;
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.VehicleRepository;
 
 import javax.inject.Singleton;
 
@@ -97,14 +100,49 @@ public class AppModule {
 
     @Provides
     @Reusable
-    LocalDataSource providesLocalDataSource(@NonNull final AppDatabase appDatabase) {
-        return new LocalDataSource(appDatabase);
+    FilmRepository providesFilmRepository(@NonNull final ApiService apiService, @NonNull AppDatabase appDatabase,
+                                          @NonNull final ISchedulerProvider schedulerProvider,
+                                          @NonNull final SharedPreferenceManager preferenceManager){
+        return  new FilmRepository(apiService,appDatabase, schedulerProvider, preferenceManager);
     }
 
     @Provides
     @Reusable
-    DataSource providesDataSource(@NonNull final LocalDataSource localDataSource, @NonNull final ApiService apiService,
-                                  @NonNull final ISchedulerProvider schedulerProvider) {
-        return new Repository(localDataSource, apiService, schedulerProvider);
+    PersonRepository providesPersonRepository(@NonNull final ApiService apiService, @NonNull AppDatabase appDatabase,
+                                            @NonNull final ISchedulerProvider schedulerProvider,
+                                            @NonNull final SharedPreferenceManager preferenceManager){
+        return  new PersonRepository(apiService,appDatabase, schedulerProvider, preferenceManager);
+    }
+
+    @Provides
+    @Reusable
+    PlanetRepository providesPlanetRepository(@NonNull final ApiService apiService, @NonNull AppDatabase appDatabase,
+                                              @NonNull final ISchedulerProvider schedulerProvider,
+                                              @NonNull final SharedPreferenceManager preferenceManager){
+        return  new PlanetRepository(apiService,appDatabase, schedulerProvider, preferenceManager);
+    }
+
+    @Provides
+    @Reusable
+    VehicleRepository providesVehicleRepository(@NonNull final ApiService apiService, @NonNull AppDatabase appDatabase,
+                                                @NonNull final ISchedulerProvider schedulerProvider,
+                                                @NonNull final SharedPreferenceManager preferenceManager){
+        return  new VehicleRepository(apiService,appDatabase, schedulerProvider, preferenceManager);
+    }
+
+    @Provides
+    @Reusable
+    SpecieRepository providesSpecieRepository(@NonNull final ApiService apiService, @NonNull AppDatabase appDatabase,
+                                              @NonNull final ISchedulerProvider schedulerProvider,
+                                              @NonNull final SharedPreferenceManager preferenceManager){
+        return  new SpecieRepository(apiService,appDatabase, schedulerProvider, preferenceManager);
+    }
+
+    @Provides
+    @Reusable
+    StarshipRepository providesStarshipRepository(@NonNull final ApiService apiService, @NonNull AppDatabase appDatabase,
+                                              @NonNull final ISchedulerProvider schedulerProvider,
+                                              @NonNull final SharedPreferenceManager preferenceManager){
+        return  new StarshipRepository(apiService,appDatabase, schedulerProvider, preferenceManager);
     }
 }

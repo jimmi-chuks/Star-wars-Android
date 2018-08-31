@@ -1,4 +1,4 @@
-package com.dani_chuks.andeladeveloper.starwars.data.db.local;
+package com.dani_chuks.andeladeveloper.starwars.data.db.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -17,8 +17,8 @@ public interface PersonDao {
     @Query("SELECT * FROM person")
     Flowable<List<Person>> getAll();
 
-    @Query("SELECT * FROM person LIMIT 7")
-    Flowable<List<Person>> getFirstSeven();
+    @Query("SELECT * FROM person LIMIT :limit")
+    Flowable<List<Person>> getItemBySize(int limit);
 
     @Query("SELECT * FROM person ORDER BY name ASC" )
     Flowable<List<Person>> getAllAlphabetically();

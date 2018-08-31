@@ -29,7 +29,7 @@ public interface ApiService {
     Observable<People> getPeople(@Query("page") int page);
 
     @GET("/api/films/{id}")
-    Observable<Film> getFilmById(@Path("id") int personId);
+    Observable<Film> getFilmById(@Path("id") int pathId);
 
     @GET("/api/films")
     Observable<FilmList> getAllFilms();

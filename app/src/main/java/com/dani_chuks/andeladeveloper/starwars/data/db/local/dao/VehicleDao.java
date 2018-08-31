@@ -1,4 +1,4 @@
-package com.dani_chuks.andeladeveloper.starwars.data.db.local;
+package com.dani_chuks.andeladeveloper.starwars.data.db.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -17,8 +17,8 @@ public interface VehicleDao {
     @Query("SELECT * FROM vehicle")
     Flowable<List<Vehicle>> getAll();
 
-    @Query("SELECT * FROM vehicle LIMIT 7")
-    Flowable<List<Vehicle>> getFirstSeven();
+    @Query("SELECT * FROM vehicle LIMIT :size")
+    Flowable<List<Vehicle>> getItemBySize(int size);
 
     @Query("SELECT * FROM vehicle ORDER BY name ASC" )
     Flowable<List<Vehicle>> getAllAlphabetically();

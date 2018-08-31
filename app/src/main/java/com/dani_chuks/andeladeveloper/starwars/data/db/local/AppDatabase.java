@@ -4,6 +4,13 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
+import com.dani_chuks.andeladeveloper.starwars.data.db.StringListConverter;
+import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.FilmDao;
+import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.PersonDao;
+import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.PlanetDao;
+import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.SpecieDao;
+import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.StarshipDao;
+import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.VehicleDao;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Person;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Planet;

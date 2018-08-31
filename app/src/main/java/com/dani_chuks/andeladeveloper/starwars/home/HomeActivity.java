@@ -37,8 +37,6 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
 
     @Inject
     HomeViewModelFactory viewModelFactory;
-    @Inject
-    HomePresenter presenter;
 
     RecyclerView filmsRecyclerView;
     RecyclerView planetsRecyclerView;
@@ -167,8 +165,6 @@ public class HomeActivity extends AppCompatActivity implements HomeView {
         setSupportActionBar(toolbar);
         initializeView();
         initializeViewModel();
-        presenter.initView(this);
-        presenter.fetchData();
     }
 
     private void initializeViewModel() {

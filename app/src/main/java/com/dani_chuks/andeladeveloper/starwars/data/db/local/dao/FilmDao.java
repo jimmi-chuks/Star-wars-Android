@@ -1,4 +1,4 @@
-package com.dani_chuks.andeladeveloper.starwars.data.db.local;
+package com.dani_chuks.andeladeveloper.starwars.data.db.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -17,8 +17,8 @@ public interface FilmDao {
     @Query("SELECT * FROM film")
     Flowable<List<Film>> getAll();
 
-    @Query("SELECT * FROM film LIMIT 7")
-    Flowable<List<Film>> getFirstSeven();
+    @Query("SELECT * FROM film LIMIT :limit")
+    Flowable<List<Film>> getItemBySize(int limit);
 
     @Query("SELECT * FROM film ORDER BY title ASC" )
     Flowable<List<Film>> getAllAlphabetically();
@@ -28,6 +28,9 @@ public interface FilmDao {
 
     @Query("SELECT * FROM film WHERE url = :filmUrl")
     Flowable<Film> getFilmByUrl(String filmUrl);
+
+    @Query("SELECT * FROM film WHERE url = :filmUrl")
+    Flowable<Film> getFilmByUrlAsSingle(String filmUrl);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateFilms(List<Film> films);

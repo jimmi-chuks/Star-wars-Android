@@ -1,4 +1,4 @@
-package com.dani_chuks.andeladeveloper.starwars.data.db.local;
+package com.dani_chuks.andeladeveloper.starwars.data.db.local.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -18,8 +18,8 @@ public interface StarshipDao {
     @Query("SELECT * FROM starship")
     Flowable<List<Starship>> getAll();
 
-    @Query("SELECT * FROM starship LIMIT 7")
-    Flowable<List<Starship>> getFirstSeven();
+    @Query("SELECT * FROM starship LIMIT :size")
+    Flowable<List<Starship>> getItemBySize(int size);
 
     @Query("SELECT * FROM starship ORDER BY name ASC" )
     Flowable<List<Starship>> getAllAlphabetically();
