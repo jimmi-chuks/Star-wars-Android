@@ -31,6 +31,10 @@ public class PlanetAdapterSmall extends RecyclerView.Adapter<PlanetAdapterSmall.
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int position) {
+        bindPlanet(myViewHolder, position);
+    }
+
+    private void bindPlanet(final @NonNull MyViewHolder myViewHolder, final int position) {
         Planet planet = planets.get(position);
         String name = myViewHolder.context.getString(R.string.card_title, planet.getName());
         String diameter = myViewHolder.context.getString(R.string.card_classification, planet.getDiameter());

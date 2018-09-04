@@ -31,6 +31,10 @@ public class FilmAdapterSmall extends RecyclerView.Adapter<FilmAdapterSmall.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int position) {
+        bindFilm(myViewHolder, position);
+    }
+
+    private void bindFilm(final @NonNull MyViewHolder myViewHolder, final int position) {
         Film film = films.get(position);
         String title = myViewHolder.context.getString(R.string.card_title, film.getTitle());
         String openingCrawl = myViewHolder.context.getString(R.string.card_opening_crawl, film.getOpeningCrawl());
@@ -46,8 +50,17 @@ public class FilmAdapterSmall extends RecyclerView.Adapter<FilmAdapterSmall.MyVi
     }
 
     @Override
+    public int getItemViewType(final int position) {
+        return super.getItemViewType(position);
+    }
+
+    @Override
     public int getItemCount() {
         return films.size();
+    }
+
+    interface UpdateViewHolde{
+        void bindView();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -31,6 +31,10 @@ public class PersonAdapterSmall extends RecyclerView.Adapter<PersonAdapterSmall.
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int position) {
+        bindPerson(myViewHolder, position);
+    }
+
+    private void bindPerson(final @NonNull MyViewHolder myViewHolder, final int position) {
         Person person = people.get(position);
         String name = myViewHolder.context.getString(R.string.card_name, person.getName());
         String gender = myViewHolder.context.getString(R.string.card_gender, person.getGender());
