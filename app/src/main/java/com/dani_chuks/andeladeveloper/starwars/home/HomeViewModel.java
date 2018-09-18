@@ -92,7 +92,7 @@ public class HomeViewModel extends ViewModel {
                 interactor.loadFilms()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
-                        .subscribe(response -> this.films.setValue(response)));
+                        .subscribe(this.films::setValue));
     }
 
     private void loadPeople() {
@@ -100,7 +100,7 @@ public class HomeViewModel extends ViewModel {
                 interactor.loadPeople()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
-                        .subscribe(response -> this.people.setValue(response))
+                        .subscribe(this.people::setValue)
         );
     }
 
@@ -109,7 +109,7 @@ public class HomeViewModel extends ViewModel {
                 interactor.loadPlanets()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
-                        .subscribe(response -> this.planets.setValue(response))
+                        .subscribe(this.planets::setValue)
         );
     }
 
@@ -118,7 +118,7 @@ public class HomeViewModel extends ViewModel {
                 interactor.loadSpecies()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
-                        .subscribe(response -> this.species.setValue(response))
+                        .subscribe(this.species::setValue)
         );
     }
 
@@ -127,7 +127,7 @@ public class HomeViewModel extends ViewModel {
                 interactor.loadVehicles()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
-                        .subscribe(response -> this.vehicles.setValue(response))
+                        .subscribe(this.vehicles::setValue)
         );
     }
 
@@ -136,7 +136,7 @@ public class HomeViewModel extends ViewModel {
                 interactor.loadStarships()
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .observeOn(schedulerProvider.getMainThreadScheduler())
-                        .subscribe(response -> this.starships.setValue(response))
+                        .subscribe(this.starships::setValue)
         );
     }
 
