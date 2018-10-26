@@ -28,12 +28,12 @@ jobs:
         - store_test_results:
             path: app/build/test-results
             destination: test-results/
-        - run:
-            name: Initial build
-            command: ./gradlew clean assembleRelease --no-daemon --stacktrace
-        - store_artifacts:
-            path: app/build/outputs/apk/
-            destination: apks/
+ #      - run:
+ #          name: Initial build
+ #          command: ./gradlew clean assembleRelease --no-daemon --stacktrace
+ #      - store_artifacts:
+ #          path: app/build/outputs/apk/
+ #          destination: apks/
   # Decodes key store file from the environmental variable KEYSTORE
   # Environmental variable KEYSTORE was created by running base64 base_cert on the base_cert keystore file.
   decode-keystore-file-job:
@@ -87,10 +87,7 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build-job
       - decode-keystore-file-job:
-          requires:
-            - build-job
           #filters:
           #  branches:
           #    only:
