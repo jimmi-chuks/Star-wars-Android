@@ -9,11 +9,9 @@
 #
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
+# update_fastlane
 
-# comment the line if you want to stop fastlane to automatically update itself
-update_fastlane
-
-default_platform(:android)
+# default_platform(:android)
 
 # platform :android do
 #   desc "Runs all the tests"
