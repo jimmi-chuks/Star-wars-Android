@@ -67,3 +67,4 @@ fastlane/readme.md
 # Keystore
 keystore.properties
 /app/starwars_keystore
+/app/debug_keystore
