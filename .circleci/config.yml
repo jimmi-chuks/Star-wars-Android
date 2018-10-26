@@ -1,14 +1,10 @@
-
-defaults: &defaults
-  working_directory: ~/code
-  docker:
-    - image: circleci/android:api-27-alpha
-
 version: 2
 jobs:
   #  build and test jobs go here
   build-job:
-      <<: *defaults
+      working_directory: ~/code
+      docker:
+        - image: circleci/android:api-27-alpha
       environment:
         JVM_OPTS: -Xmx3200m
       steps:
@@ -28,77 +24,142 @@ jobs:
         - store_test_results:
             path: app/build/test-results
             destination: test-results/
- #      - run:
- #          name: Initial build
- #          command: ./gradlew clean assembleRelease --no-daemon --stacktrace
- #      - store_artifacts:
- #          path: app/build/outputs/apk/
- #          destination: apks/
-  # Decodes key store file from the environmental variable KEYSTORE
-  # Environmental variable KEYSTORE was created by running base64 base_cert on the base_cert keystore file.
-  decode-keystore-file-job:
-      <<: *defaults
-      steps:
-        - checkout
-        - run: mkdir -p mkdir keystore
+        - run:
+            name: Initial build
+            command: ./gradlew clean assembleRelease --no-daemon --stacktrace
+        - store_artifacts:
+            path: app/build/outputs/apk/
+            destination: apks/
         - run:
             name: "Decode Android key store"
-            command: echo $KEYSTORE | base64 -d | tee keystore/base_cert
-        - store_artifacts:
-            path: keystore
-            destination: keystore/
-        - persist_to_workspace:
-            root: ~/code/keystore
+            command: echo $KEYSTORE | base64 -d | tee app/base_cert
+        - restore_cache:
+            keys:
+            - v1-gems-{{ checksum "Gemfile.lock" }}
+            - v1-gems-
+        - run:
+            name: Bundle install
+            command: bundle install
+            environment:
+              BUNDLE_PATH: vendor/bundle
+        - save_cache:
+            key: v1-gems-{{ checksum "Gemfile.lock" }}
             paths:
-              - base_cert
+              - vendor/bundle
+        - run:
+            name: "Install fastlane"
+            command: bundle install
+        - run:
+            name: "Update fastlane"
+            command: bundle update fastlane
+        - run:
+            name: "Deploy to Fabric"
+            command: bundle exec fastlane beta_production_release_circle_ci
 
-  deploy-fastlane-job:
-        <<: *defaults
-        steps:
-          - checkout
-          - restore_cache:
-              keys:
-              - v1-gems-{{ checksum "Gemfile.lock" }}
-              - v1-gems-
-          - run: mkdir -p mkdir keystore
-          - attach_workspace:
-              at: ~/code/keystore
-          - run:
-              name: Bundle install
-              command: bundle install
-              environment:
-                BUNDLE_PATH: vendor/bundle
 
-          - save_cache:
-              key: v1-gems-{{ checksum "Gemfile.lock" }}
-              paths:
-                - vendor/bundle
-          - run:
-              name: "Install fastlane"
-              command: bundle install
-          - run:
-              name: "Update fastlane"
-              command: bundle update fastlane
-          - run:
-              name: "Deploy to Fabric"
-              command: bundle exec fastlane beta_production_release_circle_ci
-
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - decode-keystore-file-job:
-          #filters:
-          #  branches:
-          #    only:
-          #      - develop
-          #      - master
-      - deploy-fastlane-job:
-          requires:
-            # Needs the keystore file ready for creating a signed APK
-            - decode-keystore-file-job
-          #filters:
-          #  branches:
-          #    only:
-          #      - develop
-          #      - master
+#defaults: &defaults
+#  working_directory: ~/code
+#  docker:
+#    - image: circleci/android:api-27-alpha
+#
+#version: 2
+#jobs:
+#  #  build and test jobs go here
+#  build-job:
+#      <<: *defaults
+#      environment:
+#        JVM_OPTS: -Xmx3200m
+#      steps:
+#        - checkout
+#        - restore_cache:
+#            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#        - run:
+#            name: Download Dependencies
+#            command: ./gradlew androidDependencies
+#        - save_cache:
+#            paths:
+#              - ~/.gradle
+#            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+#        - run:
+#            name: Run Tests
+#            command: ./gradlew lint test
+#        - store_test_results:
+#            path: app/build/test-results
+#            destination: test-results/
+#        - run:
+#            name: Initial build
+#            command: ./gradlew clean assembleRelease --no-daemon --stacktrace
+#        - store_artifacts:
+#            path: app/build/outputs/apk/
+#            destination: apks/
+#  # Decodes key store file from the environmental variable KEYSTORE
+#  # Environmental variable KEYSTORE was created by running base64 base_cert on the base_cert keystore file.
+#  decode-keystore-file-job:
+#      <<: *defaults
+#      steps:
+#        - checkout
+#        - run: mkdir -p mkdir keystore
+#        - run:
+#            name: "Decode Android key store"
+#            command: echo $KEYSTORE | base64 -d | tee keystore/base_cert
+#        - store_artifacts:
+#            path: keystore
+#            destination: keystore/
+#        - persist_to_workspace:
+#            root: ~/code/keystore
+#            paths:
+#              - base_cert
+#
+#  deploy-fastlane-job:
+#        <<: *defaults
+#        steps:
+#          - checkout
+#          - restore_cache:
+#              keys:
+#              - v1-gems-{{ checksum "Gemfile.lock" }}
+#              - v1-gems-
+#          - run: mkdir -p mkdir keystore
+#          - attach_workspace:
+#              at: ~/code/keystore
+#          - run:
+#              name: Bundle install
+#              command: bundle install
+#              environment:
+#                BUNDLE_PATH: vendor/bundle
+#
+#          - save_cache:
+#              key: v1-gems-{{ checksum "Gemfile.lock" }}
+#              paths:
+#                - vendor/bundle
+#          - run:
+#              name: "Install fastlane"
+#              command: bundle install
+#          - run:
+#              name: "Update fastlane"
+#              command: bundle update fastlane
+#          - run:
+#              name: "Deploy to Fabric"
+#              command: bundle exec fastlane beta_production_release_circle_ci
+#
+#workflows:
+#  version: 2
+#  build-deploy:
+#    jobs:
+#      - build-job
+#      - decode-keystore-file-job:
+#          requires:
+#            - build-job
+#          #filters:
+#          #  branches:
+#          #    only:
+#          #      - develop
+#          #      - master
+#      - deploy-fastlane-job:
+#          requires:
+#            # Needs the keystore file ready for creating a signed APK
+#            - decode-keystore-file-job
+#          #filters:
+#          #  branches:
+#          #    only:
+#          #      - develop
+#          #      - master
