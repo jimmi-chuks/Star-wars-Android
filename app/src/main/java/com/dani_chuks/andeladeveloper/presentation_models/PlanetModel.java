@@ -139,7 +139,7 @@ public class PlanetModel implements ItemModel {
 
 
     @Override
-    public ItemModelType getModelType() {
-        return itemModelType;
+    public int getModelType() {
+        return itemModelType.getItemValueType();
     }
 }

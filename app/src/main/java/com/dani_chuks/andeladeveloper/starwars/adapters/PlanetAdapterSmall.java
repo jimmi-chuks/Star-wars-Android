@@ -71,7 +71,5 @@ public class PlanetAdapterSmall extends RecyclerView.Adapter<PlanetAdapterSmall.
             terrain = itemView.findViewById(R.id.terrain);
             context = itemView.getContext();
         }
-
-
     }
 }

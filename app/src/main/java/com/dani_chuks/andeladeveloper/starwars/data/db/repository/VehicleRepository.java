@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider;
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants;
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager;
+import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource;
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils;
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase;
-import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource;
 import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Vehicle;
 
@@ -20,7 +20,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 
-public class VehicleRepository implements DataSource<Vehicle>{
+public class VehicleRepository implements DataSource<Vehicle> {
 
     @NonNull
     private final ApiService apiService;
@@ -68,7 +68,6 @@ public class VehicleRepository implements DataSource<Vehicle>{
                 apiService.getVehicleById(vehicleId)
                         .subscribeOn(schedulerProvider.getIoScheduler())
                         .subscribe(vehicle -> appDatabase.vehicleDao().insertVehicle(vehicle)));
-
         return appDatabase.vehicleDao().getVehicleByURL(stringUrl);
     }
 

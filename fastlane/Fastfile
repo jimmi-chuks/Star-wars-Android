@@ -1,0 +1,95 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# comment the line if you want to stop fastlane to automatically update itself
+update_fastlane
+
+default_platform(:android)
+
+# platform :android do
+#   desc "Runs all the tests"
+#   lane :test do
+#     gradle(task: "test")
+#   end
+#
+#   desc "Submit a new Beta Build to Crashlytics Beta"
+#   lane :beta do
+#     gradle(task: "clean assembleRelease")
+#     crashlytics
+#
+#     # sh "your_script.sh"
+#     # You can also use other beta testing services here
+#   end
+#
+#   desc "Deploy a new version to the Google Play"
+#   lane :deploy do
+#     gradle(task: "clean assembleRelease")
+#     upload_to_play_store
+#   end
+# end
+
+
+default_platform :android
+
+lane :beta_production_release do
+  # build the release variant
+  build_android_app(task: "assembleProductionRelease")
+
+  # upload to Beta by Crashlytics
+ 
+  crashlytics(
+    api_token: "2a7bb4b7568a3235b01f73754e9954acc44f3e76",
+    build_secret: "6965c3a5209d6dace07f67470be891a7de27984710f37824fb6e2fc32007b527",
+    groups: "starwars-test-group",
+    notes: last_git_commit[:message]
+  )
+end
+
+# Should be used with environmental variables in Circle CI
+lane :beta_production_release_circle_ci do
+
+
+gradle(
+  task: "assemble",
+  build_type: "Release",
+  print_command: false,
+  properties: {
+    "android.injected.signing.store.file" => "keystore/base_cert",
+    "android.injected.signing.store.password" => ENV['storePassword'],
+    "android.injected.signing.key.alias" => ENV['keyAlias'],
+    "android.injected.signing.key.password" => ENV['keyPassword']
+  }
+)
+
+
+  # upload to Beta by Crashlytics
+  crashlytics(
+    api_token: "2a7bb4b7568a3235b01f73754e9954acc44f3e76",
+    build_secret: "6965c3a5209d6dace07f67470be891a7de27984710f37824fb6e2fc32007b527",
+    groups: "starwars-test-group",
+    notes: last_git_commit[:message]
+  )
+end
+
+lane :beta_staging_release do
+  # build the release variant
+   build_android_app(task: "assembleStagingRelease")
+
+  # upload to Beta by Crashlytics
+  crashlytics(
+     api_token: "2a7bb4b7568a3235b01f73754e9954acc44f3e76",
+     build_secret: "6965c3a5209d6dace07f67470be891a7de27984710f37824fb6e2fc32007b527",
+     groups: "starwars-test-group",
+    notes: last_git_commit[:message]
+  )
+end
+

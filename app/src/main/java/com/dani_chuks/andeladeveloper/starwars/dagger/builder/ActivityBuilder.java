@@ -25,9 +25,6 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ActivityBuilder {
 
-//    @ContributesAndroidInjector(modules = DetailsActivityModule.class)
-//    abstract DetailsActivity bindLoginActivity();
-//
     @ContributesAndroidInjector(modules = {HomeModule.class})
     abstract HomeActivity bindHomeActivity();
 }

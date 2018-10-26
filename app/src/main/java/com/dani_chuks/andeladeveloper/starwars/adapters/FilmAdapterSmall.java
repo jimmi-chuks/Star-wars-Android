@@ -13,7 +13,7 @@ import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film;
 
 import java.util.List;
 
-public class FilmAdapterSmall extends RecyclerView.Adapter<FilmAdapterSmall.MyViewHolder> {
+public class FilmAdapterSmall extends RecyclerView.Adapter<FilmAdapterSmall.FilmViewHolder> {
 
     List<Film> films;
 
@@ -23,25 +23,25 @@ public class FilmAdapterSmall extends RecyclerView.Adapter<FilmAdapterSmall.MyVi
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, final int i) {
+    public FilmViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, final int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.small_film_item, viewGroup, false);
-        return new MyViewHolder(itemView);
+        return new FilmViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int position) {
-        bindFilm(myViewHolder, position);
+    public void onBindViewHolder(@NonNull final FilmViewHolder filmViewHolder, final int position) {
+        bindFilm(filmViewHolder, position);
     }
 
-    private void bindFilm(final @NonNull MyViewHolder myViewHolder, final int position) {
+    private void bindFilm(final @NonNull FilmViewHolder filmViewHolder, final int position) {
         Film film = films.get(position);
-        String title = myViewHolder.context.getString(R.string.card_title, film.getTitle());
-        String openingCrawl = myViewHolder.context.getString(R.string.card_opening_crawl, film.getOpeningCrawl());
-        String releaseDate = myViewHolder.context.getString(R.string.card_release_date, film.getReleaseDate());
-        myViewHolder.title.setText(title);
-        myViewHolder.openingCrawl.setText(openingCrawl);
-        myViewHolder.releaseDate.setText(releaseDate);
+        String title = filmViewHolder.context.getString(R.string.card_title, film.getTitle());
+        String openingCrawl = filmViewHolder.context.getString(R.string.card_opening_crawl, film.getOpeningCrawl());
+        String releaseDate = filmViewHolder.context.getString(R.string.card_release_date, film.getReleaseDate());
+        filmViewHolder.title.setText(title);
+        filmViewHolder.openingCrawl.setText(openingCrawl);
+        filmViewHolder.releaseDate.setText(releaseDate);
     }
 
     public void setFilms(List<Film> films){
@@ -63,13 +63,13 @@ public class FilmAdapterSmall extends RecyclerView.Adapter<FilmAdapterSmall.MyVi
         void bindView();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class FilmViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView openingCrawl;
         TextView releaseDate;
         Context context;
 
-        public MyViewHolder(@NonNull final View itemView) {
+        public FilmViewHolder(@NonNull final View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             openingCrawl = itemView.findViewById(R.id.opening_crawl);

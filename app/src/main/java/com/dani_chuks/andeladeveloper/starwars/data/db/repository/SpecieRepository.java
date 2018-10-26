@@ -87,8 +87,8 @@ public class SpecieRepository implements DataSource<Specie>{
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)) {
-            int nextPage = preferenceManager.getResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME);
+        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME)) {
+            int nextPage = preferenceManager.getResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME);
             final int newNextPage = nextPage + 1;
             disposableManager.add(
                     apiService.getSpecieList(nextPage)
@@ -96,8 +96,8 @@ public class SpecieRepository implements DataSource<Specie>{
                             .subscribe(response ->
                             {
                                 appDatabase.specieDao().insertSpecieList(response.getSpecie());
-                                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, newNextPage);
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME, true);
+                                preferenceManager.setResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME, newNextPage);
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME, true);
                             }));
         }
     }
