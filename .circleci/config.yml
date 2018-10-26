@@ -1,7 +1,7 @@
 version: 2
 jobs:
   #  build and test jobs go here
-  build-job:
+  build:
       working_directory: ~/code
       docker:
         - image: circleci/android:api-27-alpha
@@ -32,7 +32,10 @@ jobs:
             destination: apks/
         - run:
             name: "Decode Android key store"
-            command: echo $KEYSTORE | base64 -d | tee app/base_cert
+            command: echo $KEYSTORE | base64 -d | tee app/starwars_keystore
+        - run:
+            name: "Run parent directory"
+            command: echo $PWD
         - restore_cache:
             keys:
             - v1-gems-{{ checksum "Gemfile.lock" }}
