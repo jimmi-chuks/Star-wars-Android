@@ -96,7 +96,7 @@ android {
         def paging_version = "1.0.1"
         def nav_version = "1.0.0-alpha05"
         def work_version = "1.0.0-alpha07"
-        def support_lib_version = "28.0.0-rc01"
+        def support_lib_version = "28.0.0"
         def rx_java_paging_version = "1.0.1"
         def constraint_layout = "2.0.0-alpha2"
         def retrofit = "2.4.0"
@@ -106,8 +106,10 @@ android {
         androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
             exclude group: 'com.android.support', module: 'support-annotations'
         })
+        implementation 'com.android.support:support-v4:28.0.0'
         implementation "com.android.support:appcompat-v7:$support_lib_version"
-        implementation "com.android.support:support-media-compat:$support_lib_version"
+        implementation "com.android.support:animated-vector-drawable:28.0.0"
+        implementation "com.android.support:support-media-compat:28.0.0"
         implementation "com.android.support:recyclerview-v7:$support_lib_version"
         implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
         implementation "com.android.support:cardview-v7:$support_lib_version"
