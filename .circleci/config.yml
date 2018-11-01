@@ -141,7 +141,7 @@ jobs:
               command: bundle update fastlane
           - run:
               name: "Deploy to Fabric"
-              command: bundle exec fastlane beta_staging_release
+              command: bundle exec fastlane beta_production_release_circle_ci
 
 workflows:
   version: 2
