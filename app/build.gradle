@@ -50,7 +50,7 @@ android {
 
     signingConfigs {
         debug {
-            storeFile file("debug_keystore")
+            storeFile rootProject.file("app/debug_keystore")
             storePassword "starwars"
             keyAlias "starwars"
             keyPassword "starwars"
@@ -58,7 +58,7 @@ android {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
+            storeFile rootProject.file("app/starwars_keystore")
             storePassword keystoreProperties['storePassword']
         }
     }
