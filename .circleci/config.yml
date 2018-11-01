@@ -120,7 +120,7 @@ jobs:
               keys:
               - v1-gems-{{ checksum "Gemfile.lock" }}
               - v1-gems-
-          - <<: *decrypt_secrets
+          #- <<: *decrypt_secrets
           - attach_workspace:
               at: ~/code/app
           - run:
@@ -148,7 +148,9 @@ workflows:
   build-deploy:
     jobs:
       - build-job
-      - deploy-fastlane-job
+      - deploy-fastlane-job:
+          requires:
+            - build-job
           #filters:
           #  branches:
           #    only:
