@@ -87,17 +87,16 @@ public class PlanetRepository implements DataSource<Planet>{
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME)) {
-            int nextPage = preferenceManager.getResourceNextPage(AppConstants.PLANET_RESOURCE_NAME);
-            final int newNextPage = nextPage + 1;
+        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME)) {
+            final int firstPage = 1;
             disposableManager.add(
-                    apiService.getPlanetList(nextPage)
+                    apiService.getPlanetList(firstPage)
                             .subscribeOn(schedulerProvider.getIoScheduler())
                             .subscribe(response ->
                             {
                                 appDatabase.planetDao().insertPlanetList(response.getPlanet());
-                                preferenceManager.setResourceNextPage(AppConstants.PLANET_RESOURCE_NAME, newNextPage);
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME, true);
+                                preferenceManager.setResourceNextPage(AppConstants.PLANET_RESOURCE_NAME, (firstPage + 1));
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME);
                             }));
         }
     }

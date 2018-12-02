@@ -16,9 +16,9 @@ public class SharedPreferenceManager {
     }
 
 
-    public void setDataTypeFetchedOnce(String resourceName, boolean isFetchedOnce){
+    public void setDataTypeFetchedOnce(String resourceName){
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(resourceName, isFetchedOnce);
+        editor.putBoolean(resourceName, true);
         editor.apply();
     }
 

@@ -87,17 +87,16 @@ public class SpecieRepository implements DataSource<Specie>{
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME)) {
-            int nextPage = preferenceManager.getResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME);
-            final int newNextPage = nextPage + 1;
+        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME)) {
+            final int firstPage = 1;
             disposableManager.add(
-                    apiService.getSpecieList(nextPage)
+                    apiService.getSpecieList(firstPage)
                             .subscribeOn(schedulerProvider.getIoScheduler())
                             .subscribe(response ->
                             {
                                 appDatabase.specieDao().insertSpecieList(response.getSpecie());
-                                preferenceManager.setResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME, newNextPage);
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME, true);
+                                preferenceManager.setResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME, (firstPage + 1));
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME);
                             }));
         }
     }

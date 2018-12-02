@@ -29,6 +29,10 @@ public class VehicleModel implements ItemModel{
         this.url = url;
     }
 
+    public VehicleModel(){
+
+    }
+
     public String getName() {
         return name;
     }

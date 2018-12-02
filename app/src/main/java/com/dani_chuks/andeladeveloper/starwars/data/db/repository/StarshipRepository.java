@@ -87,17 +87,16 @@ public class StarshipRepository implements DataSource<Starship>{
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)) {
-            int nextPage = preferenceManager.getResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME);
-            final int newNextPage = nextPage + 1;
+        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)) {
+            final int firstPage = 1;
             disposableManager.add(
-                    apiService.getStarshipList(nextPage)
+                    apiService.getStarshipList(firstPage)
                             .subscribeOn(schedulerProvider.getIoScheduler())
                             .subscribe(response ->
                             {
                                 appDatabase.starshipDao().insertStarshipList(response.getStarship());
-                                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, newNextPage);
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME, true);
+                                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, (firstPage + 1));
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME);
                             }));
         }
     }

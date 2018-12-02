@@ -25,6 +25,9 @@ public class PlanetModel implements ItemModel {
         this.url = url;
     }
 
+    public PlanetModel() {
+    }
+
     public String getName() {
         return name;
     }

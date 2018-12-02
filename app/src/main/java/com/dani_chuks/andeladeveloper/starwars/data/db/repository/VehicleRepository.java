@@ -86,17 +86,16 @@ public class VehicleRepository implements DataSource<Vehicle> {
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)) {
-            int nextPage = preferenceManager.getResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME);
-            final int newNextPage = nextPage + 1;
+        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)) {
+            final int firstPage = 1;
             disposableManager.add(
-                    apiService.getVehicleList(nextPage)
+                    apiService.getVehicleList(firstPage)
                             .subscribeOn(schedulerProvider.getIoScheduler())
                             .subscribe(response ->
                             {
                                 appDatabase.vehicleDao().insertVehicleList(response.getVehicle());
-                                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, newNextPage);
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME, true);
+                                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, (firstPage + 1));
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME);
                             }));
         }
     }

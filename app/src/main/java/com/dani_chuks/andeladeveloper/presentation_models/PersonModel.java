@@ -27,6 +27,10 @@ public class PersonModel implements ItemModel {
         this.url = url;
     }
 
+    public PersonModel() {
+    }
+
+
     public String getName() {
         return name;
     }

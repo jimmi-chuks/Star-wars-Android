@@ -11,7 +11,7 @@ public enum ItemModelType {
 
     private final int itemValueType;
 
-    private ItemModelType(int itemValueType) {
+    ItemModelType(int itemValueType) {
         this.itemValueType = itemValueType;
     }
 

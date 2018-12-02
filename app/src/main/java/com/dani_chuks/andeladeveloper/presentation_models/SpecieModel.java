@@ -26,6 +26,10 @@ public class SpecieModel implements ItemModel {
         this.url = url;
     }
 
+    public SpecieModel() {
+    }
+
+
     public String getName() {
         return name;
     }

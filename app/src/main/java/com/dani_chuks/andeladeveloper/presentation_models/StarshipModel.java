@@ -23,8 +23,13 @@ public class StarshipModel implements ItemModel{
     private List<String> films = new ArrayList<>();
     private String created;
     private String edited;
+
     public StarshipModel(final String url) {
         this.url = url;
+    }
+
+    public StarshipModel(){
+
     }
 
     private final ItemModelType itemModelType = ItemModelType.STARSHIP;

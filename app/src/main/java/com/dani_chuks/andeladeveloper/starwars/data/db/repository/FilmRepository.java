@@ -50,14 +50,6 @@ public class FilmRepository implements DataSource<Film> {
                         .subscribe(this::insertItem));
 
         return appDatabase.filmDao().getFilmByUrl(filmUrl);
-/*
-return Flowable.concatArray(
-appDatabase.filmDao().getFilmByUrl(filmUrl),
-apiService.getFilmById(url).toFlowable(BackpressureStrategy.BUFFER)
-.distinct()
-.doOnNext(appDatabase.filmDao()::insertFilm)
-);
-*/
     }
 
     @Override
@@ -105,13 +97,13 @@ apiService.getFilmById(url).toFlowable(BackpressureStrategy.BUFFER)
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)) {
+        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)) {
             disposableManager.add(
                     apiService.getAllFilms()
                             .subscribeOn(schedulerProvider.getIoScheduler())
                             .subscribe(response -> {
                                 appDatabase.filmDao().insertFilms(response.getFilm());
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME, true);
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME);
                             }));
         }
     }

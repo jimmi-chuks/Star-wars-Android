@@ -87,17 +87,16 @@ public class PersonRepository implements DataSource<Person> {
     }
 
     private void fetchIfEmpty() {
-        if (!preferenceManager.isDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME)) {
-            int nextPage = preferenceManager.getResourceNextPage(AppConstants.PERSON_RESOURCE_NAME);
-            final int newNextPage = nextPage + 1;
+        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME)) {
+            final int firstPage = 1;
             disposableManager.add(
-                    apiService.getPeople(nextPage)
+                    apiService.getPeople(firstPage)
                             .subscribeOn(schedulerProvider.getIoScheduler())
                             .subscribe(response ->
                             {
                                 appDatabase.personDao().insertPeople(response.getPerson());
-                                preferenceManager.setResourceNextPage(AppConstants.PERSON_RESOURCE_NAME, newNextPage);
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME, true);
+                                preferenceManager.setResourceNextPage(AppConstants.PERSON_RESOURCE_NAME, (firstPage + 1));
+                                preferenceManager.setDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME);
                             }));
         }
     }

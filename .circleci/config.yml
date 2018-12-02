@@ -1,65 +1,3 @@
-#version: 2
-#jobs:
-#  #  build and test jobs go here
-#  build:
-#      working_directory: ~/code
-#      docker:
-#        - image: circleci/android:api-27-alpha
-#      environment:
-#        JVM_OPTS: -Xmx3200m
-#      steps:
-#        - checkout
-#        - restore_cache:
-#            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#        - run:
-#            name: Download Dependencies
-#            command: ./gradlew androidDependencies
-#        - save_cache:
-#            paths:
-#              - ~/.gradle
-#            key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
-#        - run:
-#            name: Run Tests
-#            command: ./gradlew lint test
-#        - store_test_results:
-#            path: app/build/test-results
-#            destination: test-results/
-#        - run:
-#            name: Initial build
-#            command: ./gradlew clean assembleRelease --no-daemon --stacktrace
-#        - store_artifacts:
-#            path: app/build/outputs/apk/
-#            destination: apks/
-#        - run:
-#            name: "Decode Android key store"
-#            command: echo $KEYSTORE | base64 -d | tee app/starwars_keystore
-#        - run:
-#            name: "Run parent directory"
-#            command: echo $PWD
-#        - restore_cache:
-#            keys:
-#            - v1-gems-{{ checksum "Gemfile.lock" }}
-#            - v1-gems-
-#        - run:
-#            name: Bundle install
-#            command: bundle install
-#            environment:
-#              BUNDLE_PATH: vendor/bundle
-#        - save_cache:
-#            key: v1-gems-{{ checksum "Gemfile.lock" }}
-#            paths:
-#              - vendor/bundle
-#        - run:
-#            name: "Install fastlane"
-#            command: bundle install
-#        - run:
-#            name: "Update fastlane"
-#            command: bundle update fastlane
-#        - run:
-#            name: "Deploy to Fabric"
-#            command: bundle exec fastlane beta_production_release_circle_ci
-
-
 defaults: &defaults
   working_directory: ~/code
   docker:
@@ -106,10 +44,6 @@ jobs:
         - store_artifacts:
             path: app/build/outputs/apk/
             destination: apks/
-       # - persist_to_workspace:
-       #     root: ~/code/app
-       #     paths:
-       #       - starwars_keystore
         - <<: *clean_secrets
 
   deploy-fastlane-job:
@@ -121,8 +55,6 @@ jobs:
               - v1-gems-{{ checksum "Gemfile.lock" }}
               - v1-gems-
           - <<: *decrypt_secrets
-         # - attach_workspace:
-         #     at: ~/code/app
           - run:
               name: Bundle install
               command: bundle install
@@ -141,7 +73,7 @@ jobs:
               command: bundle update fastlane
           - run:
               name: "Deploy to Fabric"
-              command: bundle exec fastlane beta_production_release_circle_ci
+              command: bundle exec fastlane beta_staging_release
 
 workflows:
   version: 2
@@ -151,8 +83,8 @@ workflows:
       - deploy-fastlane-job:
           requires:
             - build-job
-          #filters:
-          #  branches:
-          #    only:
-          #      - develop
-          #      - master
+          filters:
+            branches:
+              only:
+                - develop
+                - master

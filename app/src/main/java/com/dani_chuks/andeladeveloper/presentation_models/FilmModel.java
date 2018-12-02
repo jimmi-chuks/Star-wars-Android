@@ -24,6 +24,8 @@ public class FilmModel implements ItemModel{
         this.url = url;
     }
 
+    public FilmModel() {
+    }
     public String getTitle() {
         return title;
     }
