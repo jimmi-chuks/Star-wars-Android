@@ -71,10 +71,9 @@ public class HomeActivity extends AppCompatActivity {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         ActivityHomeBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_home);
-//        ActivityHomeBinding binding = ActivityHomeBinding.inflate(getLayoutInflater());
         HomeViewModel homeViewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
-//        homeViewModel.initItems();
         binding.setViewmodel(homeViewModel);
         binding.setLifecycleOwner(this);
+        homeViewModel.initAll();
     }
 }

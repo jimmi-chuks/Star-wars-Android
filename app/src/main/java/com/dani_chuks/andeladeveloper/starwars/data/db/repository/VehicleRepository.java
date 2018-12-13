@@ -86,17 +86,27 @@ public class VehicleRepository implements DataSource<Vehicle> {
     }
 
     private void fetchIfEmpty() {
-        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)) {
-            final int firstPage = 1;
-            disposableManager.add(
-                    apiService.getVehicleList(firstPage)
-                            .subscribeOn(schedulerProvider.getIoScheduler())
-                            .subscribe(response ->
-                            {
-                                appDatabase.vehicleDao().insertVehicleList(response.getVehicle());
-                                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, (firstPage + 1));
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME);
-                            }));
-        }
+//        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)) {
+//            final int firstPage = 1;
+//            disposableManager.add(
+//                    apiService.getVehicleList(firstPage)
+//                            .subscribeOn(schedulerProvider.getIoScheduler())
+//                            .subscribe(response ->
+//                            {
+//                                appDatabase.vehicleDao().insertVehicleList(response.getVehicle());
+//                                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, (firstPage + 1));
+//                                preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME);
+//                            }));
+//        }
+        final int firstPage = 1;
+        disposableManager.add(
+                apiService.getVehicleList(firstPage)
+                        .subscribeOn(schedulerProvider.getIoScheduler())
+                        .subscribe(response ->
+                        {
+                            appDatabase.vehicleDao().insertVehicleList(response.getVehicle());
+                            preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, (firstPage + 1));
+                            preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME);
+                        }));
     }
 }

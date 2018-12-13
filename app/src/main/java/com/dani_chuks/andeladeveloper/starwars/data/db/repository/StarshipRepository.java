@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider;
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants;
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager;
+import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource;
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils;
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase;
-import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource;
 import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService;
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Starship;
 
@@ -87,17 +87,27 @@ public class StarshipRepository implements DataSource<Starship>{
     }
 
     private void fetchIfEmpty() {
-        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)) {
-            final int firstPage = 1;
-            disposableManager.add(
-                    apiService.getStarshipList(firstPage)
-                            .subscribeOn(schedulerProvider.getIoScheduler())
-                            .subscribe(response ->
-                            {
-                                appDatabase.starshipDao().insertStarshipList(response.getStarship());
-                                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, (firstPage + 1));
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME);
-                            }));
-        }
+//        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)) {
+//            final int firstPage = 1;
+//            disposableManager.add(
+//                    apiService.getStarshipList(firstPage)
+//                            .subscribeOn(schedulerProvider.getIoScheduler())
+//                            .subscribe(response ->
+//                            {
+//                                appDatabase.starshipDao().insertStarshipList(response.getStarship());
+//                                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, (firstPage + 1));
+//                                preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME);
+//                            }));
+//        }
+        final int firstPage = 1;
+        disposableManager.add(
+                apiService.getStarshipList(firstPage)
+                        .subscribeOn(schedulerProvider.getIoScheduler())
+                        .subscribe(response ->
+                        {
+                            appDatabase.starshipDao().insertStarshipList(response.getStarship());
+                            preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, (firstPage + 1));
+                            preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME);
+                        }));
     }
 }

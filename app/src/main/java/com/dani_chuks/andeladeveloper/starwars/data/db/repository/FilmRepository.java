@@ -97,15 +97,22 @@ public class FilmRepository implements DataSource<Film> {
     }
 
     private void fetchIfEmpty() {
-        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)) {
-            disposableManager.add(
-                    apiService.getAllFilms()
-                            .subscribeOn(schedulerProvider.getIoScheduler())
-                            .subscribe(response -> {
-                                appDatabase.filmDao().insertFilms(response.getFilm());
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME);
-                            }));
-        }
+//        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)) {
+//            disposableManager.add(
+//                    apiService.getAllFilms()
+//                            .subscribeOn(schedulerProvider.getIoScheduler())
+//                            .subscribe(response -> {
+//                                appDatabase.filmDao().insertFilms(response.getFilm());
+//                                preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME);
+//                            }));
+//        }
+        disposableManager.add(
+                apiService.getAllFilms()
+                        .subscribeOn(schedulerProvider.getIoScheduler())
+                        .subscribe(response -> {
+                            appDatabase.filmDao().insertFilms(response.getFilm());
+                            preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME);
+                        }));
     }
 
 }

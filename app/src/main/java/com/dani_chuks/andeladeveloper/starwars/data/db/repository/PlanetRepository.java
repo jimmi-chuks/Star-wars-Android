@@ -87,17 +87,27 @@ public class PlanetRepository implements DataSource<Planet>{
     }
 
     private void fetchIfEmpty() {
-        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME)) {
-            final int firstPage = 1;
-            disposableManager.add(
-                    apiService.getPlanetList(firstPage)
-                            .subscribeOn(schedulerProvider.getIoScheduler())
-                            .subscribe(response ->
-                            {
-                                appDatabase.planetDao().insertPlanetList(response.getPlanet());
-                                preferenceManager.setResourceNextPage(AppConstants.PLANET_RESOURCE_NAME, (firstPage + 1));
-                                preferenceManager.setDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME);
-                            }));
-        }
+//        if (preferenceManager.isDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME)) {
+//            final int firstPage = 1;
+//            disposableManager.add(
+//                    apiService.getPlanetList(firstPage)
+//                            .subscribeOn(schedulerProvider.getIoScheduler())
+//                            .subscribe(response ->
+//                            {
+//                                appDatabase.planetDao().insertPlanetList(response.getPlanet());
+//                                preferenceManager.setResourceNextPage(AppConstants.PLANET_RESOURCE_NAME, (firstPage + 1));
+//                                preferenceManager.setDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME);
+//                            }));
+//        }
+        final int firstPage = 1;
+        disposableManager.add(
+                apiService.getPlanetList(firstPage)
+                        .subscribeOn(schedulerProvider.getIoScheduler())
+                        .subscribe(response ->
+                        {
+                            appDatabase.planetDao().insertPlanetList(response.getPlanet());
+                            preferenceManager.setResourceNextPage(AppConstants.PLANET_RESOURCE_NAME, (firstPage + 1));
+                            preferenceManager.setDataTypeFetchedOnce(AppConstants.PLANET_RESOURCE_NAME);
+                        }));
     }
 }

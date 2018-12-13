@@ -41,8 +41,8 @@ public class SmallAdapter<T extends ItemModel> extends RecyclerView.Adapter<Smal
     public BaseViewHolder onCreateViewHolder(@NonNull final ViewGroup viewGroup, final int viewType) {
         switch (viewType) {
             case 1:
-                SmallFilmItemBinding filmItemBinding  = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()), R.layout.small_film_item,
-                        viewGroup, false);
+                SmallFilmItemBinding filmItemBinding  = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
+                        R.layout.small_film_item, viewGroup, false);
                 return new FilmViewHolder(filmItemBinding.getRoot());
             case 2:
                 SmallPersonItemBinding personItemBinding = DataBindingUtil.inflate(LayoutInflater.from(viewGroup.getContext()),
