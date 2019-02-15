@@ -8,8 +8,12 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
 }
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'io.fabric'
@@ -25,7 +29,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     dataBinding {
@@ -85,64 +89,55 @@ android {
 
     dependencies {
 
-        def lifecycle_version = "1.1.1"
-        def room_version = "1.1.1" // "1.1.0"
-        def paging_version = "1.0.1"
-        def nav_version = "1.0.0-alpha05"
-        def work_version = "1.0.0-alpha07"
-        def support_lib_version = "28.0.0"
-        def rx_java_paging_version = "1.0.1"
-        def constraint_layout = "2.0.0-alpha2"
+        def lifecycle_version = "2.0.0"
+        def room_version = "2.1.0-alpha03"
+        def android_x = "1.0.0"
+        def constraint_layout = "1.1.3"
         def retrofit = "2.4.0"
 
         implementation fileTree(dir: 'libs', include: ['*.jar'])
-        implementation 'com.android.support.constraint:constraint-layout:1.1.3'
         androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2', {
             exclude group: 'com.android.support', module: 'support-annotations'
         })
-        implementation 'com.android.support:support-v4:28.0.0'
-        implementation "com.android.support:appcompat-v7:$support_lib_version"
-        implementation "com.android.support:animated-vector-drawable:28.0.0"
-        implementation "com.android.support:support-media-compat:28.0.0"
-        implementation "com.android.support:recyclerview-v7:$support_lib_version"
-        implementation "com.android.support.constraint:constraint-layout:$constraint_layout"
-        implementation "com.android.support:cardview-v7:$support_lib_version"
-        implementation "com.android.support:design:$support_lib_version"
+        implementation "androidx.legacy:legacy-support-v4:$android_x"
+        implementation "androidx.recyclerview:recyclerview:$android_x"
+        implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
+        implementation "androidx.cardview:cardview:$android_x"
+        implementation "com.google.android.material:material:1.1.0-alpha02"
         testImplementation 'junit:junit:4.12'
-        androidTestImplementation 'com.android.support.test:runner:1.0.2'
+        androidTestImplementation 'androidx.test:runner:1.1.1'
+        androidTestImplementation 'androidx.test:rules:1.1.1'
+        // Optional -- Hamcrest library
+        androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+        // Optional -- UI testing with Espresso
+        androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+        // Optional -- UI testing with UI Automator
+        androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
 //    fabric
         implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
             transitive = true;
         }
+
         // ViewModel and LiveData
-        implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-        annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
-//    // optional - ReactiveStreams support for LiveData
-//    implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
-        implementation "android.arch.persistence.room:runtime:$room_version"
-        annotationProcessor "android.arch.persistence.room:compiler:$room_version"
+        implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+        kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
+        // optional - Coroutines support for Room
+        implementation "androidx.room:room-coroutines:$room_version"
+
+        // Test helpers
+        testImplementation "androidx.room:room-testing:$room_version"
+
+        //  Room
+        implementation "androidx.room:room-runtime:$room_version"
+        kapt "androidx.room:room-compiler:$room_version"
+
         // optional - RxJava support for Room
-        implementation "android.arch.persistence.room:rxjava2:$room_version"
-        implementation "android.arch.paging:runtime:$paging_version"
-        // alternatively - without Android dependencies for testing
-        testImplementation "android.arch.paging:common:$paging_version"
-        // optional - RxJava support, currently in release candidate
-        implementation "android.arch.paging:rxjava2:$rx_java_paging_version"
-        implementation "android.arch.navigation:navigation-fragment:$nav_version" // use -ktx for Kotlin
-        implementation "android.arch.navigation:navigation-ui:$nav_version" // use -ktx for Kotlin
-        implementation "android.arch.work:work-runtime:$work_version" // use -ktx for Kotlin
-        // optional - Firebase JobDispatcher support
-        implementation "android.arch.work:work-firebase:$work_version"
+        implementation "androidx.room:room-rxjava2:$room_version"
 
-        // optional - Test helpers
-        testImplementation "android.arch.core:core-testing:$lifecycle_version"
-        testImplementation "android.arch.persistence.room:testing:$room_version"
-        androidTestImplementation "android.arch.navigation:navigation-testing:$nav_version"
-        androidTestImplementation "android.arch.work:work-testing:$work_version"
-
-        implementation 'io.reactivex.rxjava2:rxjava:2.1.16'
-        implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+        implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
+        implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
 
         // retrofit
         implementation "com.squareup.retrofit2:retrofit:$retrofit"
@@ -152,17 +147,17 @@ android {
         implementation 'com.squareup.picasso:picasso:2.5.2'
 
         // dependency injection
-        implementation "com.google.dagger:dagger:2.14.1"
-        annotationProcessor "com.google.dagger:dagger-compiler:2.14.1"
-        annotationProcessor "com.google.dagger:dagger-android-processor:2.14.1"
-        implementation "com.google.dagger:dagger-android-support:2.14.1"
+        implementation 'com.google.dagger:dagger-android:2.18'
+        implementation "com.google.dagger:dagger-android-support:2.18"
+        kapt "com.google.dagger:dagger-compiler:2.18"
+        kapt "com.google.dagger:dagger-android-processor:2.18"
         compileOnly 'javax.annotation:jsr250-api:1.0'
-
         implementation 'javax.inject:javax.inject:1'
 
-        implementation 'com.jakewharton:butterknife:8.8.1'
-        annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+        // Coroutine
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
     }
 }
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

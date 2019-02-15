@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.arch.lifecycle.MutableLiveData"/>
+        <import type="androidx.lifecycle.MutableLiveData"/>
 
         <variable
                 name="viewmodel"
@@ -14,26 +14,26 @@
                 />
     </data>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".home.HomeActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/AppTheme.AppBarOverlay">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
                     app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/primaryDarkColor"
@@ -42,7 +42,7 @@
                 tools:context=".home.HomeActivity"
                 tools:showIn="@layout/activity_home">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -61,7 +61,7 @@
                         app:layout_constraintTop_toTopOf="parent"/>
 
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/films_recyclerView"
                         style="@style/film_home_recycler_view_style"
                         app:smallAdapterData="@{viewmodel.films}"
@@ -73,7 +73,7 @@
                         android:id="@+id/films_progress_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{!viewmodel.films.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.films.getValue().isEmpty()}"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/films_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
@@ -89,7 +89,7 @@
                         app:layout_constraintTop_toBottomOf="@id/films_recyclerView"
                         tools:text="@string/show_all_movies"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/people_recyclerView"
                         style="@style/home_recycler_view_style"
                         app:smallAdapterData="@{viewmodel.people}"
@@ -119,7 +119,7 @@
                         tools:text="@string/show_all_characters"/>
 
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/planets_recyclerView"
                         style="@style/home_recycler_view_style"
                         android:layout_height="120dp"
@@ -149,7 +149,7 @@
                         app:layout_constraintTop_toBottomOf="@id/planets_recyclerView"
                         tools:text="@string/show_all_planets"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/vehicles_recyclerView"
                         style="@style/home_recycler_view_style"
                         app:smallAdapterData="@{viewmodel.vehicles}"
@@ -178,7 +178,7 @@
                         app:layout_constraintTop_toBottomOf="@id/vehicles_recyclerView"
                         tools:text="@string/show_all_vehicles"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/starships_recyclerView"
                         style="@style/home_recycler_view_style"
                         android:layout_marginTop="12dp"
@@ -208,7 +208,7 @@
                         app:layout_constraintTop_toBottomOf="@id/starships_recyclerView"
                         tools:text="@string/show_all_starships"/>
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/species_recyclerView"
                         style="@style/home_recycler_view_style"
                         app:smallAdapterData="@{viewmodel.species}"
@@ -238,23 +238,23 @@
                         tools:text="@string/show_all_species"/>
 
 
-                <android.support.constraint.Guideline
+                <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/start_guideline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintGuide_begin="8dp"/>
 
-                <android.support.constraint.Guideline
+                <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/end_guideline"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintGuide_end="8dp"/>
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
