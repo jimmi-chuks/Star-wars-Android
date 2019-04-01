@@ -1,35 +1,30 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.local.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film
-import io.reactivex.Flowable
 
 @Dao
-interface FilmDao {
-    @get:Query("SELECT * FROM film")
-    val all: Flowable<List<Film>>
+abstract class FilmDao: BaseDao<Film> {
+    @Query("SELECT * FROM film")
+    abstract suspend fun all():List<Film>
 
-    @get:Query("SELECT * FROM film ORDER BY title ASC")
-    val allAlphabetically: Flowable<List<Film>>
+    @Query("SELECT * FROM film ORDER BY title ASC")
+    abstract suspend fun allAlphabetically(): List<Film>
 
     @Query("SELECT * FROM film LIMIT :limit")
-    fun getItemBySize(limit: Int): Flowable<List<Film>>
+    abstract suspend fun getItemBySize(limit: Int): List<Film>
 
     @Query("SELECT * FROM film WHERE title IN (:titles)")
-    fun getFilmsFromTitle(titles: List<String>): Flowable<List<Film>>
+    abstract suspend fun getFilmsFromTitle(titles: List<String>): List<Film>
 
     @Query("SELECT * FROM film WHERE url = :filmUrl")
-    fun getFilmByUrl(filmUrl: String): Flowable<Film>
+    abstract suspend fun getFilmByUrl(filmUrl: String): Film
 
     @Query("SELECT * FROM film WHERE url = :filmUrl")
-    fun getFilmByUrlAsSingle(filmUrl: String): Flowable<Film>
+    abstract suspend fun getFilmByUrlAsSingle(filmUrl: String): Film
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateFilms(films: List<Film>)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertFilms(films: List<Film>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertFilm(film: Film)
+//    @Query("UPDATE film SET title = :newValue WHERE url = :url")
+//    abstract suspend fun updateTitle(url: String, newValue: String)
 }

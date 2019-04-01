@@ -1,6 +1,6 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider
+import com.dani_chuks.andeladeveloper.starwars.dagger.IDispatcherProvider
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
 import dagger.Module
 import dagger.Provides
@@ -23,8 +23,8 @@ class HomeModule {
 
     @Provides
     @Reusable
-    fun providesHomeViewMOdelFactory(viewModelInteractor: HomeViewModelInteractor, iSchedulerProvider: ISchedulerProvider): HomeViewModelFactory {
-        return HomeViewModelFactory(viewModelInteractor, iSchedulerProvider)
+    fun providesHomeViewMOdelFactory(viewModelInteractor: HomeViewModelInteractor, iDispatchersProvider: IDispatcherProvider): HomeViewModelFactory {
+        return HomeViewModelFactory(viewModelInteractor, iDispatchersProvider)
     }
 
 

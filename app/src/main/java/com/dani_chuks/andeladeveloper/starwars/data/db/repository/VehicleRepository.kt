@@ -1,72 +1,66 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider
+import com.dani_chuks.andeladeveloper.starwars.dagger.Result
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
-import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
-import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Vehicle
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel.Companion.firstPage
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class VehicleRepository @Inject
-constructor(private val apiService: ApiService,
+constructor(private val remoteDataSource: VehicleRemoteDataSource,
             private val appDatabase: AppDatabase,
-            private val schedulerProvider: ISchedulerProvider,
-            private val preferenceManager: SharedPreferenceManager) : DataSource<Vehicle> {
+            private val preferenceManager: SharedPreferenceManager) {
     private val disposableManager = CompositeDisposable()
 
-    override val all: Flowable<List<Vehicle>>
-        get() {
-            fetchIfEmpty()
-            return appDatabase.vehicleDao().all
+    suspend fun all(): List<Vehicle> {
+            return appDatabase.vehicleDao().all()
         }
 
-    override val allAlphabetically: Flowable<List<Vehicle>>
-        get() {
-            fetchIfEmpty()
-            return appDatabase.vehicleDao().allAlphabetically
+    suspend fun allAlphabetically(): List<Vehicle> {
+            return appDatabase.vehicleDao().allAlphabetically()
         }
 
-    override fun getItemsLimitedToSize(size: Int): Flowable<List<Vehicle>> {
-        fetchIfEmpty()
+    suspend fun getItemsLimitedToSize(size: Int): List<Vehicle> {
         return appDatabase.vehicleDao().getItemBySize(size)
     }
 
-    override fun getItemByUrl(stringUrl: String): Flowable<Vehicle> {
-        val vehicleId = DbUtils.getLastPathFromUrl(stringUrl)
-        disposableManager.add(
-                apiService.getVehicleById(vehicleId)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { vehicle -> appDatabase.vehicleDao().insertVehicle(vehicle) })
-        return appDatabase.vehicleDao().getVehicleByURL(stringUrl)
+    suspend fun getItemByUrl(stringUrl: String): Vehicle = coroutineScope {
+        val vehicle = async { appDatabase.vehicleDao().getVehicleByURL(stringUrl)}.await()
+        if(vehicle == null){
+            val vehicleId = DbUtils.getLastPathFromUrl(stringUrl)
+            val vehicleFromRemote = remoteDataSource.getVehicleById(vehicleId)
+            if(vehicleFromRemote is Result.Success) {
+                vehicleFromRemote.data.let { appDatabase.vehicleDao().insert(it) }
+            }
+        }
+        vehicle
     }
 
-    override fun insertItem(vehicle: Vehicle) {
-        disposableManager.add(Observable.just(vehicle)
-                .subscribeOn(schedulerProvider.ioScheduler)
-                .subscribe { appDatabase.vehicleDao().insertVehicle(vehicle) })
+    suspend fun insertItem(vehicle: Vehicle) = coroutineScope{
+        appDatabase.vehicleDao().insert(vehicle)
     }
 
-    override fun insertItemList(vehicle: List<Vehicle>) {
-        disposableManager.add(Observable.just(vehicle)
-                .subscribeOn(schedulerProvider.ioScheduler)
-                .subscribe { appDatabase.vehicleDao().insertVehicleList(vehicle) })
+    suspend fun insertItemList(vehicles: List<Vehicle>) = coroutineScope{
+        appDatabase.vehicleDao().insertList(vehicles)
     }
 
-    private fun fetchIfEmpty() {
-        val firstPage = 1
-        disposableManager.add(
-                apiService.getVehicleList(firstPage)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { response ->
-                            response.vehicle?.let { appDatabase.vehicleDao().insertVehicleList(it) }
-                            preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, firstPage + 1)
-                            preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)
-                        })
+    suspend fun fetchAndSync(page: Int)= coroutineScope {
+        val allVehicles = remoteDataSource.getVehicleFromPage(page)
+        println("fetch and sync Vehicles from page $page ==> $allVehicles")
+        if (allVehicles is Result.Success) {
+            allVehicles.data.vehicle?.let {
+                appDatabase.vehicleDao().insertList(it)
+                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, firstPage + 1)
+                preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)
+            }
+
+        }
+        allVehicles
     }
 }

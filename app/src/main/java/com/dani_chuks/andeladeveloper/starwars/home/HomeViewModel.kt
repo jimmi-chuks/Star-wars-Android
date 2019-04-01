@@ -1,15 +1,22 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.dani_chuks.andeladeveloper.presentation_models.*
 import com.dani_chuks.andeladeveloper.presentation_models.mappers.Mapper
-import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider
+import com.dani_chuks.andeladeveloper.starwars.base.BaseViewModel
+import com.dani_chuks.andeladeveloper.starwars.dagger.IDispatcherProvider
+import com.dani_chuks.andeladeveloper.starwars.dagger.Result
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class HomeViewModel @Inject
-constructor(private val interactor: HomeViewModelInteractor, private val schedulerProvider: ISchedulerProvider) : ViewModel() {
+constructor(private val interactor: HomeViewModelInteractor,
+            val iDispatchersProvider: IDispatcherProvider) : BaseViewModel(iDispatchersProvider) {
+
+    override val job: Job = Job()
+    override val scope: CoroutineScope =  CoroutineScope(iDispatchersProvider.main + job)
+
     var films: MutableLiveData<List<FilmModel>> = MutableLiveData()
     var people: MutableLiveData<List<PersonModel>> = MutableLiveData()
     var planets: MutableLiveData<List<PlanetModel>> = MutableLiveData()
@@ -17,6 +24,9 @@ constructor(private val interactor: HomeViewModelInteractor, private val schedul
     var starships: MutableLiveData<List<StarshipModel>> = MutableLiveData()
     var vehicles: MutableLiveData<List<VehicleModel>> = MutableLiveData()
     val disposableManager = CompositeDisposable()
+
+    private val viewModelJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
     init {
         loadVehicles()
@@ -30,54 +40,106 @@ constructor(private val interactor: HomeViewModelInteractor, private val schedul
     override fun onCleared() {
         super.onCleared()
         disposableManager.dispose()
+
+        uiScope.coroutineContext.cancelChildren()
     }
 
     private fun loadFilms() {
-        disposableManager.add(
-                interactor.loadFilms()
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .observeOn(schedulerProvider.mainThreadScheduler)
-                        .subscribe { films.setValue(Mapper.mapFims(it))})
+//        val result = storiesRepository.loadStories(page)
+//        parentJobs.remove(jobId)
+        uiScope.launch(iDispatchersProvider.io){
+            val fetchedFilms = interactor.loadFilms()
+            fetchedFilms?.let { films.postValue(Mapper.mapFims(it)) }
+        }
+
+        uiScope.launch(iDispatchersProvider.io){
+            val fetchedFilms = interactor.loadFilmsRemote()
+            if(fetchedFilms is Result.Error){
+                withContext(iDispatchersProvider.main /**+ job */){
+                    println("Error fetching films")
+                    println(fetchedFilms)
+                }
+            }
+        }
     }
 
     private fun loadPeople() {
-        disposableManager.add(
-                interactor.loadPeople()
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .observeOn(schedulerProvider.mainThreadScheduler)
-                        .subscribe {people.setValue(Mapper.mapPeople(it))})
+        uiScope.launch(iDispatchersProvider.io) {
+            val peopleFetched = interactor.loadPeople()
+            peopleFetched?.let {people.postValue(Mapper.mapPeople(it))}
+        }
+
+        uiScope.launch(iDispatchersProvider.io) {
+            val peopleFromRemote = interactor.loadPeopleRemote(firstPage)
+            if(peopleFromRemote is Result.Error){
+                println("Error fetching people")
+                println(peopleFromRemote)
+            }
+        }
     }
 
     private fun loadPlanets() {
-        disposableManager.add(
-                interactor.loadPlanets()
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .observeOn(schedulerProvider.mainThreadScheduler)
-                        .subscribe { planets.setValue(Mapper.mapPlanets(it)) })
+        uiScope.launch(iDispatchersProvider.io) {
+            val planetList = interactor.loadPlanets()
+            planetList?.let {planets.postValue(Mapper.mapPlanets(it))}
+        }
+
+        uiScope.launch(iDispatchersProvider.io) {
+            val planetFromRemote = interactor.loadPlanetRemote(firstPage)
+            if(planetFromRemote is Result.Error){
+                println("Error fetching planets")
+                println(planetFromRemote)
+            }
+        }
     }
 
     private fun loadSpecies() {
-        disposableManager.add(
-                interactor.loadSpecies()
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .observeOn(schedulerProvider.mainThreadScheduler)
-                        .subscribe {species.setValue(Mapper.mapSpecies(it))})
+        uiScope.launch(iDispatchersProvider.io) {
+            val specieList = interactor.loadSpecies()
+            specieList?.let {species.postValue(Mapper.mapSpecies(it))}
+        }
+
+        uiScope.launch(iDispatchersProvider.io) {
+            val speciesFromRemote = interactor.loadSpeciesRemote(firstPage)
+            if(speciesFromRemote is Result.Error){
+                println("Error fetching species")
+                println(speciesFromRemote)
+            }
+        }
     }
 
     private fun loadVehicles() {
-        disposableManager.add(
-                interactor.loadVehicles()
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .observeOn(schedulerProvider.mainThreadScheduler)
-                        .subscribe {vehicles.setValue(Mapper.mapVehicles(it)) })
+        uiScope.launch(iDispatchersProvider.io) {
+            val vehicleList = interactor.loadVehicles()
+            vehicleList?.let {vehicles.postValue(Mapper.mapVehicles(it))}
+        }
+
+        uiScope.launch(iDispatchersProvider.io) {
+            val vehiclesFromRemote = interactor.loadVehicleRemote(firstPage)
+            if(vehiclesFromRemote is Result.Error){
+                println("Error fetching vehicles")
+                println(vehiclesFromRemote)
+            }
+        }
     }
 
     private fun loadStarships() {
-        disposableManager.add(
-                interactor.loadStarships()
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .observeOn(schedulerProvider.mainThreadScheduler)
-                        .subscribe { starships.setValue(Mapper.mapStarships(it))})
+        uiScope.launch(iDispatchersProvider.io) {
+            val starshipList = interactor.loadStarships()
+            starshipList?.let {starships.postValue(Mapper.mapStarships(it))}
+        }
+
+        uiScope.launch(iDispatchersProvider.io) {
+            val starshipsFromRemote = interactor.loadStarshipsRemote(firstPage)
+            if(starshipsFromRemote is Result.Error){
+                println("Error fetching starships")
+                println(starshipsFromRemote)
+            }
+        }
+    }
+
+    companion object {
+        const val firstPage = 1
     }
 
 }

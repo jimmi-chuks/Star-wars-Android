@@ -1,73 +1,66 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider
+import com.dani_chuks.andeladeveloper.starwars.dagger.Result
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
-import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
-import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Starship
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class StarshipRepository @Inject
-constructor(private val apiService: ApiService,
+constructor(private val remoteDataSource: StarshipRemoteDataSource,
             private val appDatabase: AppDatabase,
-            private val schedulerProvider: ISchedulerProvider,
-            private val preferenceManager: SharedPreferenceManager) : DataSource<Starship> {
+            private val preferenceManager: SharedPreferenceManager) {
     private val disposableManager = CompositeDisposable()
 
-    override val all: Flowable<List<Starship>>
-        get() {
-            fetchIfEmpty()
-            return appDatabase.starshipDao().all
+    suspend fun all(): List<Starship> {
+            return appDatabase.starshipDao().all()
         }
 
-    override val allAlphabetically: Flowable<List<Starship>>
-        get() {
-            fetchIfEmpty()
-            return appDatabase.starshipDao().allAlphabetically
+    suspend fun allAlphabetically(): List<Starship> {
+            return appDatabase.starshipDao().allAlphabetically()
         }
 
-    override fun getItemsLimitedToSize(size: Int): Flowable<List<Starship>> {
-        fetchIfEmpty()
+    suspend fun getItemsLimitedToSize(size: Int): List<Starship> {
         return appDatabase.starshipDao().getItemBySize(size)
     }
 
-    override fun getItemByUrl(stringUrl: String): Flowable<Starship> {
-        val starshipId = DbUtils.getLastPathFromUrl(stringUrl)
-        disposableManager.add(
-                apiService.getStarshipById(starshipId)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { starship -> appDatabase.starshipDao().insertStarship(starship) })
-
-        return appDatabase.starshipDao().getStarshipByURL(stringUrl)
+    suspend fun getItemByUrl(stringUrl: String): Starship = coroutineScope {
+        val starship = async { appDatabase.starshipDao().getStarshipByURL(stringUrl)}.await()
+        if(starship == null){
+            val starshipId = DbUtils.getLastPathFromUrl(stringUrl)
+            val starshipFromRemote = remoteDataSource.getStarshipById(starshipId)
+            if(starshipFromRemote is Result.Success) {
+                starshipFromRemote.data.let { appDatabase.starshipDao().insert(it) }
+            }
+        }
+        starship
     }
 
-    override fun insertItem(starship: Starship) {
-        disposableManager.add(Observable.just(starship)
-                .subscribeOn(schedulerProvider.ioScheduler)
-                .subscribe { appDatabase.starshipDao().insertStarship(starship) })
+    suspend fun insertItem(starship: Starship) = coroutineScope {
+        appDatabase.starshipDao().insert(starship)
     }
 
-    override fun insertItemList(starship: List<Starship>) {
-        disposableManager.add(Observable.just(starship)
-                .subscribeOn(schedulerProvider.ioScheduler)
-                .subscribe { appDatabase.starshipDao().insertStarshipList(starship) })
+    suspend fun insertItemList(starship: List<Starship>)= coroutineScope {
+        appDatabase.starshipDao().insertList(starship)
     }
 
-    private fun fetchIfEmpty() {
-        val firstPage = 1
-        disposableManager.add(
-                apiService.getStarshipList(firstPage)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { response ->
-                            response.starship?.let { appDatabase.starshipDao().insertStarshipList(it) }
-                            preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, firstPage + 1)
-                            preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)
-                        })
+    suspend fun fetchAndSync(page: Int)= coroutineScope {
+        val allStarships = remoteDataSource.getStarshipFromPage(page)
+        println("fetch and sync star ships from page $page ==> $allStarships")
+        if (allStarships is Result.Success) {
+            allStarships.data.starship?.let {
+                appDatabase.starshipDao().insertList(it)
+                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, HomeViewModel.firstPage + 1)
+                preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)
+            }
+
+        }
+        allStarships
     }
 }

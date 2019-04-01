@@ -1,75 +1,61 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.ISchedulerProvider
+import com.dani_chuks.andeladeveloper.starwars.dagger.Result
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
-import com.dani_chuks.andeladeveloper.starwars.data.db.DataSource
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
-import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService
+import com.dani_chuks.andeladeveloper.starwars.data.models.People
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Person
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class PersonRepository @Inject
-constructor(private val apiService: ApiService,
-            private val appDatabase: AppDatabase,
-            private val schedulerProvider: ISchedulerProvider,
-            private val preferenceManager: SharedPreferenceManager) : DataSource<Person> {
-    private val disposableManager = CompositeDisposable()
+constructor(private val appDatabase: AppDatabase,
+            val remoteDataSource: PersonRemoteDataSource,
+            private val preferenceManager: SharedPreferenceManager) {
 
-    override val all: Flowable<List<Person>>
-        get() {
-            fetchIfEmpty()
-            return appDatabase.personDao().all
+    suspend fun all(): List<Person> {
+            return appDatabase.personDao().all()
         }
 
-    override val allAlphabetically: Flowable<List<Person>>
-        get() {
-            fetchIfEmpty()
-            return appDatabase.personDao().allAlphabetically
+    suspend fun allAlphabetically(): List<Person>  {
+            return appDatabase.personDao().allAlphabetically()
         }
 
-    override fun getItemsLimitedToSize(size: Int): Flowable<List<Person>> {
-        fetchIfEmpty()
+    suspend fun getItemsLimitedToSize(size: Int): List<Person> {
         return appDatabase.personDao().getItemBySize(size)
     }
 
-    override fun getItemByUrl(stringUrl: String): Flowable<Person> {
-        val personId = DbUtils.getLastPathFromUrl(stringUrl)
-        disposableManager.add(
-                apiService.getPersonById(personId)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { person -> appDatabase.personDao().insertPerson(person) })
-
-        return appDatabase.personDao().getPersonByURL(stringUrl)
+    suspend fun getPersonById(stringUrl: String): Person = coroutineScope {
+        val person = async { appDatabase.personDao().getPersonByURL(stringUrl) }.await()
+        if(person == null) {
+            val personId = DbUtils.getLastPathFromUrl(stringUrl)
+            val personFromRemote =  remoteDataSource.getPersonById(personId)
+            if(personFromRemote is Result.Success) personFromRemote.data.let { appDatabase.personDao().insert(it) }
+        }
+       person
     }
 
-    override fun insertItem(person: Person) {
-        disposableManager.add(
-                Observable.just(person)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { appDatabase.personDao().insertPerson(person) })
-
+    suspend fun insertPerson(person: Person)= coroutineScope {
+        appDatabase.personDao().insert(person)
     }
 
-    override fun insertItemList(people: List<Person>) {
-        disposableManager.add(Observable.just(people)
-                .subscribeOn(schedulerProvider.ioScheduler)
-                .subscribe { appDatabase.personDao().insertPeople(people) })
+    suspend fun insertItemList(people: List<Person>) = coroutineScope {
+        appDatabase.personDao().insertList(people)
     }
 
-    private fun fetchIfEmpty() {
-        val firstPage = 1
-        disposableManager.add(
-                apiService.getPeople(firstPage)
-                        .subscribeOn(schedulerProvider.ioScheduler)
-                        .subscribe { response ->
-                            response.person?.let { appDatabase.personDao().insertPeople(it) }
-                            preferenceManager.setResourceNextPage(AppConstants.PERSON_RESOURCE_NAME, firstPage + 1)
-                            preferenceManager.setDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME)
-                        })
+    suspend fun fetchAndSync(page: Int): Result<People> = coroutineScope {
+        val peopleFetched = remoteDataSource.getPeopleFromPage(page)
+        println("fetch and sync People from page $page ==> $peopleFetched")
+        if (peopleFetched is Result.Success) {
+            peopleFetched.data.person?.let {
+                appDatabase.personDao().insertList(it)
+                preferenceManager.setResourceNextPage(AppConstants.PERSON_RESOURCE_NAME, page + 1)
+                preferenceManager.setDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME)
+            }
+        }
+        peopleFetched
     }
 }

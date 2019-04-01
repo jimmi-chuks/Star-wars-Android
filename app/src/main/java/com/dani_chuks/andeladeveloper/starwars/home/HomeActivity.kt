@@ -1,6 +1,5 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -15,53 +14,6 @@ class HomeActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
-
-    val viewContext: Context
-        get() = this
-
-    fun showAllFilms() {
-
-    }
-
-    fun showAllCharacters() {
-
-    }
-
-    fun showAllVehicles() {
-
-    }
-
-    fun showAllSpecies() {
-
-    }
-
-    fun showAllStarships() {
-
-    }
-
-    fun showFilm(filmId: Int) {
-
-    }
-
-    fun showCharacter(characterId: Int) {
-
-    }
-
-    fun showVehicle(vehicleId: Int) {
-
-    }
-
-    fun showSpecies(specieId: Int) {
-
-    }
-
-    fun showStarship(starshipId: Int) {
-
-    }
-
-    fun hideProgress(resourceName: String) {
-
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

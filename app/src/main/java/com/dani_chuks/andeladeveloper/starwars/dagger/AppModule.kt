@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
-import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.ComputationScheduler
 import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.DatabaseInfo
-import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.IoScheduler
-import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.MainScheduler
+import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.DefaultDispatcher
+import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.IoDispatcher
+import com.dani_chuks.andeladeveloper.starwars.dagger.qualifiers.MainDispatcher
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
@@ -17,9 +17,8 @@ import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import io.reactivex.Scheduler
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -53,31 +52,31 @@ class AppModule {
 
     @Provides
     @Reusable
-    @MainScheduler
-    fun provideMainScheduler(): Scheduler {
-        return AndroidSchedulers.mainThread()
+    @MainDispatcher
+    fun provideMainDispatcher(): CoroutineDispatcher {
+        return Dispatchers.Main
     }
 
     @Provides
     @Reusable
-    @IoScheduler
-    fun provideIoScheduler(): Scheduler {
-        return Schedulers.io()
+    @IoDispatcher
+    fun provideIoDispatcher(): CoroutineDispatcher {
+        return Dispatchers.IO
     }
 
     @Provides
     @Reusable
-    @ComputationScheduler
-    fun providesComputationScheduler(): Scheduler {
-        return Schedulers.computation()
+    @DefaultDispatcher
+    fun providesDefaultDispatcher(): CoroutineDispatcher {
+        return Dispatchers.Default
     }
 
     @Provides
     @Reusable
-    fun provideSchedulerProvider(@MainScheduler mainThreadScheduler: Scheduler,
-                                          @IoScheduler ioScheduler: Scheduler,
-                                          @ComputationScheduler computationScheduler: Scheduler): ISchedulerProvider {
-        return SchedulerProvider(mainThreadScheduler, ioScheduler, computationScheduler)
+    fun provideDispatcherProvider(@MainDispatcher ui: CoroutineDispatcher,
+                                  @IoDispatcher io: CoroutineDispatcher,
+                                  @DefaultDispatcher computation: CoroutineDispatcher): IDispatcherProvider {
+        return DispatchersProvider(ui, io, computation)
     }
 
 
@@ -91,50 +90,85 @@ class AppModule {
 
     @Provides
     @Reusable
-    fun providesPersonRepository(apiService: ApiService, appDatabase: AppDatabase,
-                                          schedulerProvider: ISchedulerProvider,
+    fun providesPersonRemoteDataSource(apiService: ApiService): PersonRemoteDataSource {
+        return PersonRemoteDataSource(apiService)
+    }
+
+    @Provides
+    @Reusable
+    fun providesPersonRepository(appDatabase: AppDatabase,
+                                          personRemoteDataSource: PersonRemoteDataSource,
                                           preferenceManager: SharedPreferenceManager): PersonRepository {
-        return PersonRepository(apiService, appDatabase, schedulerProvider, preferenceManager)
+        return PersonRepository(appDatabase, personRemoteDataSource, preferenceManager)
     }
-
 
     @Provides
     @Reusable
-    fun providesFilmRepository(apiService: ApiService, appDatabase: AppDatabase,
-                               schedulerProvider: ISchedulerProvider,
+    fun providesFilmRemoteDataSource(apiService: ApiService): FilmRemoteDataSource {
+        return FilmRemoteDataSource(apiService)
+    }
+
+    @Provides
+    @Reusable
+    fun providesFilmRepository(appDatabase: AppDatabase,
+                               filmRemoteDataSource: FilmRemoteDataSource,
                                preferenceManager: SharedPreferenceManager): FilmRepository {
-        return FilmRepository(apiService, appDatabase, schedulerProvider, preferenceManager)
+        return FilmRepository(appDatabase, filmRemoteDataSource, preferenceManager)
     }
 
     @Provides
     @Reusable
-    fun providesPlanetRepository(apiService: ApiService, appDatabase: AppDatabase,
-                                          schedulerProvider: ISchedulerProvider,
-                                          preferenceManager: SharedPreferenceManager): PlanetRepository {
-        return PlanetRepository(apiService, appDatabase, schedulerProvider, preferenceManager)
+    fun providesPlanetRemoteDataSource(apiService: ApiService): PlanetRemoteDataSource {
+        return PlanetRemoteDataSource(apiService)
     }
 
     @Provides
     @Reusable
-    fun providesVehicleRepository(apiService: ApiService, appDatabase: AppDatabase,
-                                           schedulerProvider: ISchedulerProvider,
-                                           preferenceManager: SharedPreferenceManager): VehicleRepository {
-        return VehicleRepository(apiService, appDatabase, schedulerProvider, preferenceManager)
+    fun providesPlanetRepository(planetRemoteDataSource: PlanetRemoteDataSource,
+                                 appDatabase: AppDatabase,
+                                 preferenceManager: SharedPreferenceManager): PlanetRepository {
+        return PlanetRepository(planetRemoteDataSource, appDatabase, preferenceManager)
     }
 
     @Provides
     @Reusable
-    fun providesSpecieRepository(apiService: ApiService, appDatabase: AppDatabase,
-                                          schedulerProvider: ISchedulerProvider,
-                                          preferenceManager: SharedPreferenceManager): SpecieRepository {
-        return SpecieRepository(apiService, appDatabase, schedulerProvider, preferenceManager)
+    fun providesSpecieRemoteDataSource(apiService: ApiService): SpecieRemoteDataSource {
+        return SpecieRemoteDataSource(apiService)
     }
 
     @Provides
     @Reusable
-    fun providesStarshipRepository(apiService: ApiService, appDatabase: AppDatabase,
-                                            schedulerProvider: ISchedulerProvider,
-                                            preferenceManager: SharedPreferenceManager): StarshipRepository {
-        return StarshipRepository(apiService, appDatabase, schedulerProvider, preferenceManager)
+    fun providesSpecieRepository(appDatabase: AppDatabase,
+                                 specieRemoteDataSource: SpecieRemoteDataSource,
+                                 preferenceManager: SharedPreferenceManager): SpecieRepository {
+        return SpecieRepository(appDatabase, specieRemoteDataSource, preferenceManager)
+    }
+
+    @Provides
+    @Reusable
+    fun providesVehicleRemoteDataSource(apiService: ApiService): VehicleRemoteDataSource {
+        return VehicleRemoteDataSource(apiService)
+    }
+
+    @Provides
+    @Reusable
+    fun providesVehicleRepository(vehicleRemoteDataSource: VehicleRemoteDataSource,
+                                  appDatabase: AppDatabase,
+                                  preferenceManager: SharedPreferenceManager): VehicleRepository {
+        return VehicleRepository(vehicleRemoteDataSource, appDatabase, preferenceManager)
+    }
+
+    @Provides
+    @Reusable
+    fun providesStarshipRemoteDataSource(apiService: ApiService): StarshipRemoteDataSource {
+        return StarshipRemoteDataSource(apiService)
+    }
+
+    @Provides
+    @Reusable
+    fun providesStarshipRepository(remoteDataSource: StarshipRemoteDataSource,
+                                   appDatabase: AppDatabase,
+                                   preferenceManager: SharedPreferenceManager): StarshipRepository {
+        return StarshipRepository(remoteDataSource, appDatabase, preferenceManager)
     }
 }

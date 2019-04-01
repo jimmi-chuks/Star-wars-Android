@@ -1,6 +1,6 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db
 
-import java.util.ArrayList
+import java.util.*
 
 object DbUtils {
 
@@ -8,7 +8,7 @@ object DbUtils {
         //        Uri uri = Uri.parse("http://base_path/some_segment/id");
         //        String lastPathSegment = uri.getLastPathSegment();
         //        return Integer.parseInt(lastPathSegment);
-        val arr = url.split("\\/".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+        val arr = url.split("/".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
         val length = arr.size
         val id = Integer.parseInt(arr[length - 1])
         //        Log.e("LasssPPPP", "getLastPathFromUrl: " + id );

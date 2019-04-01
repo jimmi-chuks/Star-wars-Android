@@ -1,37 +1,23 @@
 package com.dani_chuks.andeladeveloper.presentation_models
 
 
-import java.util.ArrayList
-
-class VehicleModel : ItemModel {
-
-    var url: String? = null
-    var name: String? = null
-    var model: String? = null
-    var manufacturer: String? = null
-    var costInCredits: String? = null
-    var length: String? = null
-    var maxAtmospheringSpeed: String? = null
-    var crew: String? = null
-    var passengers: String? = null
-    var cargoCapacity: String? = null
-    var consumables: String? = null
-    var vehicleClass: String? = null
-    var pilots: List<String> = ArrayList()
-    var films: List<String> = ArrayList()
-    var created: String? = null
-    var edited: String? = null
+data class VehicleModel (
+    var url: String = "",
+    var name: String = "",
+    var model: String = "",
+    var manufacturer: String = "",
+    var costInCredits: String = "",
+    var length: String = "",
+    var maxAtmospheringSpeed: String = "",
+    var crew: String = "",
+    var passengers: String = "",
+    var cargoCapacity: String = "",
+    var consumables: String = "",
+    var vehicleClass: String = "",
+    var pilots: List<String> = emptyList(),
+    var films: List<String> = emptyList(),
+    var created: String = "",
+    var edited: String = "") : ItemModel {
     private val itemModelType = ItemModelType.VEHICLE
-
-    override val modelType: Int
-        get() = itemModelType.itemValueType
-
-
-    constructor(url: String) {
-        this.url = url
-    }
-
-    constructor() {
-
-    }
+    override val modelType: Int = itemModelType.itemValueType
 }

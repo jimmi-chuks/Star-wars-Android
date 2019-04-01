@@ -1,32 +1,20 @@
 package com.dani_chuks.andeladeveloper.presentation_models
 
-import java.util.ArrayList
 
-class PlanetModel : ItemModel {
-
-    var url: String? = null
-    var name: String? = null
-    var rotationPeriod: String? = null
-    var orbitalPeriod: String? = null
-    var diameter: String? = null
-    var climate: String? = null
-    var gravity: String? = null
-    var terrain: String? = null
-    var surfaceWater: String? = null
-    var population: String? = null
-    var residents: List<String> = ArrayList()
-    var films: List<String> = ArrayList()
-    var created: String? = null
-    var edited: String? = null
-    private val itemModelType = ItemModelType.PLANET
-
-
-    override val modelType: Int
-        get() = itemModelType.itemValueType
-
-    constructor(url: String) {
-        this.url = url
-    }
-
-    constructor() {}
+data class PlanetModel(
+        var url: String = "",
+        var name: String = "",
+        var rotationPeriod: String = "",
+        var orbitalPeriod: String = "",
+        var diameter: String = "",
+        var climate: String = "",
+        var gravity: String = "",
+        var terrain: String = "",
+        var surfaceWater: String = "",
+        var population: String = "",
+        var residents: List<String> = emptyList(),
+        var films: List<String> = emptyList(),
+        var created: String = "",
+        var edited: String = "") : ItemModel {
+    override val modelType: Int = ItemModelType.PLANET.itemValueType
 }
