@@ -1,14 +1,13 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.Result
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
 import com.dani_chuks.andeladeveloper.starwars.data.models.SpecieList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Specie
+import com.dani_chuks.andeladeveloper.starwars.di.Result
 import com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel.Companion.firstPage
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -17,7 +16,6 @@ class SpecieRepository @Inject
 constructor(private val appDatabase: AppDatabase,
             private val remoteDataSource: SpecieRemoteDataSource,
             private val preferenceManager: SharedPreferenceManager) {
-    private val disposableManager = CompositeDisposable()
 
     suspend fun all(): List<Specie>  {
             return appDatabase.specieDao().all()
@@ -43,7 +41,7 @@ constructor(private val appDatabase: AppDatabase,
         specie
     }
 
-    suspend fun insertItem(t: Specie) {
+    suspend fun insertItem(t: Specie) = coroutineScope {
         appDatabase.specieDao().insert(t)
     }
 

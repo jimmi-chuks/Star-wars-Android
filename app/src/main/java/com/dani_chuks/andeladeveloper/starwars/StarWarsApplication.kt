@@ -2,7 +2,7 @@ package com.dani_chuks.andeladeveloper.starwars
 
 import android.app.Activity
 import android.app.Application
-import com.dani_chuks.andeladeveloper.starwars.dagger.DaggerAppComponent
+import com.dani_chuks.andeladeveloper.starwars.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector

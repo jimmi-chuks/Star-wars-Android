@@ -1,6 +1,6 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.IDispatcherProvider
+import com.dani_chuks.andeladeveloper.starwars.di.IDispatcherProvider
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
 import dagger.Module
 import dagger.Provides

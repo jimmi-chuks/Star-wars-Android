@@ -51,9 +51,7 @@ class SmallAdapter() : RecyclerView.Adapter<SmallAdapter.BaseViewHolder<ItemMode
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<ItemModel>, position: Int) {
-        val model = itemModel!![position]
-        holder.bind(model)
-
+        itemModel?.get(position)?.let { holder.bind(it) }
     }
 
     override fun setItems(itemModel: List<ItemModel>?) {

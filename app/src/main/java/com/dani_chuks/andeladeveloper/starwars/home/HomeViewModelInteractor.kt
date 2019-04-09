@@ -1,10 +1,10 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.Result
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
 import com.dani_chuks.andeladeveloper.starwars.data.models.*
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.*
+import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
@@ -62,6 +62,10 @@ class HomeViewModelInteractor @Inject constructor(
 
     internal suspend fun loadStarshipsRemote(page: Int): Result<StarshipList> = coroutineScope {
         starshipRepository.fetchAndSync(page)
+    }
+
+    internal suspend fun clearFilms() = coroutineScope {
+        filmRepository.deleteAll()
     }
 
     companion object {

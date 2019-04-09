@@ -1,13 +1,12 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository
 
-import com.dani_chuks.andeladeveloper.starwars.dagger.Result
+import com.dani_chuks.andeladeveloper.starwars.di.Result
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Starship
 import com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
@@ -16,7 +15,6 @@ class StarshipRepository @Inject
 constructor(private val remoteDataSource: StarshipRemoteDataSource,
             private val appDatabase: AppDatabase,
             private val preferenceManager: SharedPreferenceManager) {
-    private val disposableManager = CompositeDisposable()
 
     suspend fun all(): List<Starship> {
             return appDatabase.starshipDao().all()
@@ -59,7 +57,6 @@ constructor(private val remoteDataSource: StarshipRemoteDataSource,
                 preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, HomeViewModel.firstPage + 1)
                 preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)
             }
-
         }
         allStarships
     }

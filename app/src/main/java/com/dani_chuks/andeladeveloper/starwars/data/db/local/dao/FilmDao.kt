@@ -19,12 +19,12 @@ abstract class FilmDao: BaseDao<Film> {
     abstract suspend fun getFilmsFromTitle(titles: List<String>): List<Film>
 
     @Query("SELECT * FROM film WHERE url = :filmUrl")
-    abstract suspend fun getFilmByUrl(filmUrl: String): Film
+    abstract suspend fun getFilmByUrl(filmUrl: String): Film?
 
-    @Query("SELECT * FROM film WHERE url = :filmUrl")
-    abstract suspend fun getFilmByUrlAsSingle(filmUrl: String): Film
+    @Query("DELETE FROM film")
+    abstract fun clearTable(): Int
 
 
-//    @Query("UPDATE film SET title = :newValue WHERE url = :url")
+//    @Query("UPDATE film SET producer = :newValue WHERE producer = :url")
 //    abstract suspend fun updateTitle(url: String, newValue: String)
 }

@@ -19,5 +19,5 @@ abstract class PersonDao: BaseDao<Person> {
     abstract suspend fun getPeopleByGender(gender: String): List<Person>
 
     @Query("SELECT * FROM person WHERE url = :personUrl")
-    abstract suspend fun getPersonByURL(personUrl: String): Person
+    abstract suspend fun getPersonByURL(personUrl: String): Person?
 }
