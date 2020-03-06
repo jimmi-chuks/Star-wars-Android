@@ -13,6 +13,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".film.TestTransitionActivity">
+        </activity>
         <activity
                 android:name=".home.HomeActivity"
                 android:label="@string/app_name"
@@ -23,12 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
         <meta-data
                 android:name="io.fabric.ApiKey"
-                android:value="2a7bb4b7568a3235b01f73754e9954acc44f3e76"
-                />
-        <activity android:name=".film.FilmActivity">
-        </activity>
+                android:value="2a7bb4b7568a3235b01f73754e9954acc44f3e76"/>
+
     </application>
 
 </manifest>

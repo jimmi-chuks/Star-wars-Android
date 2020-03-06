@@ -1,10 +1,15 @@
 package com.dani_chuks.andeladeveloper.starwars.di
 
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService
+import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.MainConnectivityManager
+import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.TestConnectivityManager
+import com.dani_chuks.andeladeveloper.starwars.util.ConnectivityLiveData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -38,8 +43,28 @@ class NetworkModule {
                 .baseUrl("https://swapi.co/")
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .build()
                 .create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideConnectivityManager(context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @SuppressLint("VisibleForTests")
+    @Provides
+    @TestConnectivityManager
+    @Singleton
+    fun provideConnectivityLiveData(connectivityManager: ConnectivityManager): ConnectivityLiveData {
+        return ConnectivityLiveData(connectivityManager)
+    }
+
+    @Provides
+    @MainConnectivityManager
+    @Singleton
+    fun provideConnectivityLiveDataFromContext(context: Context): ConnectivityLiveData {
+        return ConnectivityLiveData(context)
     }
 }

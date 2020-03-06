@@ -8,7 +8,7 @@
 
         <variable
                 name="vehicle"
-                type="com.dani_chuks.andeladeveloper.presentation_models.VehicleModel"/>
+                type="com.dani_chuks.andeladeveloper.presentation_models.MainModels.VehicleModel"/>
     </data>
 
     <androidx.cardview.widget.CardView

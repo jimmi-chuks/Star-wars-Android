@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="small_card_view_height">60dp</dimen>
+    <dimen name="medium_card_view_height">120dp</dimen>
+    <dimen name="large_card_view_height">150dp</dimen>
 </resources>

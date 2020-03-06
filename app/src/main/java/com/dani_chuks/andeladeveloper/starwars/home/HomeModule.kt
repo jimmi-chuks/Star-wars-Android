@@ -1,7 +1,12 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.specie.SpecieRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.starship.StarshipRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.vehicle.VehicleRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.film.FilmRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.people.PeopleRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.planet.PlanetRepository
 import com.dani_chuks.andeladeveloper.starwars.di.IDispatcherProvider
-import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -17,7 +22,7 @@ class HomeModule {
             specieRepository: SpecieRepository,
             starshipRepository: StarshipRepository,
             vehicleRepository: VehicleRepository,
-            personRepository: PersonRepository): HomeViewModelInteractor {
+            personRepository: PeopleRepository): HomeViewModelInteractor {
         return HomeViewModelInteractor(filmRepository, planetRepository, specieRepository, starshipRepository, vehicleRepository, personRepository)
     }
 

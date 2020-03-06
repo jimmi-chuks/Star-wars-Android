@@ -8,7 +8,7 @@
 
         <variable
                 name="starship"
-                type="com.dani_chuks.andeladeveloper.presentation_models.StarshipModel"/>
+                type="com.dani_chuks.andeladeveloper.presentation_models.MainModels.StarshipModel"/>
     </data>
 
     <androidx.cardview.widget.CardView

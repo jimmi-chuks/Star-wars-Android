@@ -8,7 +8,7 @@ import com.dani_chuks.andeladeveloper.starwars.data.db.local.dao.*
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.*
 
 
-@Database(entities = [Film::class, Person::class, Planet::class, Specie::class, Starship::class, Vehicle::class], version = 1, exportSchema = false)
+@Database(entities = [Film::class, Person::class, Planet::class, Specie::class, StarShip::class, Vehicle::class], version = 1, exportSchema = false)
 @TypeConverters(StringListConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

@@ -2,10 +2,10 @@ package com.dani_chuks.andeladeveloper.starwars
 
 import android.view.View
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dani_chuks.andeladeveloper.presentation_models.ItemModel
+import com.dani_chuks.andeladeveloper.presentation_models.MainModels
 import com.dani_chuks.andeladeveloper.starwars.adapters.SmallAdapter
 
 object CustomBindingAdapter {
@@ -22,18 +22,17 @@ object CustomBindingAdapter {
 
     @BindingAdapter("smallAdapterData")
     @JvmStatic
-    fun <T : ItemModel> setRecyclerViewAdapter(recyclerView: RecyclerView, data: MutableLiveData<List<ItemModel>>?) {
-        var adapter = recyclerView.adapter as SmallAdapter?
-        if (adapter == null) {
-            adapter = SmallAdapter()
+    fun <T : MainModels> setRecyclerViewAdapter(recyclerView: RecyclerView, data: LiveData<List<MainModels>>?) {
+
+        if((recyclerView.adapter as? SmallAdapter) == null){
+            recyclerView.adapter = SmallAdapter()
         }
         data?.value?.let {
-            adapter.setItems(data.value)
-            recyclerView.adapter = adapter
+            (recyclerView.adapter as? SmallAdapter)?.submitList(it)
             var layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
             if (layoutManager == null) {
-                layoutManager = androidx.recyclerview.widget.LinearLayoutManager(recyclerView.context)
-                layoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+                layoutManager = LinearLayoutManager(recyclerView.context)
+                layoutManager.orientation = LinearLayoutManager.HORIZONTAL
             }
             recyclerView.layoutManager = layoutManager
         }
@@ -41,21 +40,18 @@ object CustomBindingAdapter {
 
     @BindingAdapter("smallAdapterData")
     @JvmStatic
-    fun <T : ItemModel> setRecyclerViewAdapter(recyclerView: RecyclerView, data: List<ItemModel>?) {
-        var adapter = recyclerView.adapter as SmallAdapter?
-        if (adapter == null) {
-            adapter = SmallAdapter()
+    fun <T : MainModels> setRecyclerViewAdapter(recyclerView: RecyclerView, data: List<MainModels>?) {
+        if((recyclerView.adapter as? SmallAdapter) == null){
+            recyclerView.adapter = SmallAdapter()
         }
         data?.let {
-            adapter.setItems(data)
-            recyclerView.adapter = adapter
+            (recyclerView.adapter as? SmallAdapter)?.submitList(it)
             var layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
             if (layoutManager == null) {
-                layoutManager = androidx.recyclerview.widget.LinearLayoutManager(recyclerView.context)
-                layoutManager.orientation = androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
+                layoutManager = LinearLayoutManager(recyclerView.context)
+                layoutManager.orientation = LinearLayoutManager.HORIZONTAL
             }
             recyclerView.layoutManager = layoutManager
         }
-
     }
 }

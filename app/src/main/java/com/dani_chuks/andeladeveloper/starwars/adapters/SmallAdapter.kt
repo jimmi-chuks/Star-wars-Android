@@ -1,174 +1,71 @@
 package com.dani_chuks.andeladeveloper.starwars.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.dani_chuks.andeladeveloper.presentation_models.*
-import com.dani_chuks.andeladeveloper.starwars.BR
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
+import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType.*
+import com.dani_chuks.andeladeveloper.presentation_models.MainModels
 import com.dani_chuks.andeladeveloper.starwars.R
 import com.dani_chuks.andeladeveloper.starwars.databinding.*
-import java.util.*
 
-class SmallAdapter() : RecyclerView.Adapter<SmallAdapter.BaseViewHolder<ItemModel>>(), BindableAdapter<ItemModel> {
+class SmallAdapter : ListAdapter<MainModels, SmallViewHolder<MainModels>>(MainModelDiffCallback()) {
 
-    private var itemModel: List<ItemModel>? = ArrayList()
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): SmallViewHolder<MainModels> {
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder<ItemModel> {
-        when (viewType) {
-            1 -> {
+        when (viewTypeFromInt(viewType)) {
+            FILM -> {
                 val filmItemBinding = DataBindingUtil.inflate<SmallFilmItemBinding>(LayoutInflater.from(viewGroup.context),
                         R.layout.small_film_item, viewGroup, false)
-                return FilmViewHolder(filmItemBinding.getRoot())
+                return FilmViewHolder(filmItemBinding.root)
             }
-            2 -> {
+
+            PERSON -> {
                 val personItemBinding = DataBindingUtil.inflate<SmallPersonItemBinding>(LayoutInflater.from(viewGroup.context),
                         R.layout.small_person_item, viewGroup, false)
-                return PersonViewHolder(personItemBinding.getRoot())
+                return PersonViewHolder(personItemBinding.root)
             }
-            3 -> {
+
+            PLANET -> {
                 val planetItemBinding = DataBindingUtil.inflate<SmallPlanetItemBinding>(LayoutInflater.from(viewGroup.context),
                         R.layout.small_planet_item, viewGroup, false)
-                return PlanetViewHolder(planetItemBinding.getRoot())
+                return PlanetViewHolder(planetItemBinding.root)
             }
-            4 -> {
+
+            SPECIE -> {
                 val smallSpecieItemBinding = DataBindingUtil.inflate<SmallSpecieItemBinding>(LayoutInflater.from(viewGroup.context),
                         R.layout.small_specie_item, viewGroup, false)
-                return SpecieViewHolder(smallSpecieItemBinding.getRoot())
+                return SpecieViewHolder(smallSpecieItemBinding.root)
             }
-            5 -> {
+
+            STARSHIP -> {
                 val starshipItemBinding = DataBindingUtil.inflate<SmallStarshipItemBinding>(LayoutInflater.from(viewGroup.context),
                         R.layout.small_starship_item, viewGroup, false)
-                return StarshipViewHolder(starshipItemBinding.getRoot())
+                return StarshipViewHolder(starshipItemBinding.root)
             }
-            else -> {
+            VEHICLE -> {
                 val vehicleItemBinding = DataBindingUtil.inflate<SmallVehicleItemBinding>(LayoutInflater.from(viewGroup.context),
                         R.layout.small_vehicle_item, viewGroup, false)
-                return VehicleViewHolder(vehicleItemBinding.getRoot())
+                return VehicleViewHolder(vehicleItemBinding.root)
             }
         }
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder<ItemModel>, position: Int) {
-        itemModel?.get(position)?.let { holder.bind(it) }
+    override fun getItemViewType(position: Int): Int = getItem(position)?.modelType?.ordinal?: 0
+
+    fun viewTypeFromInt(viewType: Int): ItemModelType = values()[viewType]
+
+    override fun onBindViewHolder(holder: SmallViewHolder<MainModels>, position: Int) {
+        holder.bind(getItem(position))
+    }
+}
+
+class MainModelDiffCallback : DiffUtil.ItemCallback<MainModels>() {
+    override fun areItemsTheSame(oldItem: MainModels, newItem: MainModels): Boolean {
+        return oldItem.url == newItem.url && oldItem.modelType == newItem.modelType
     }
 
-    override fun setItems(itemModel: List<ItemModel>?) {
-        this.itemModel = itemModel
-        notifyDataSetChanged()
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return itemModel?.get(position)?.modelType ?: 6
-    }
-
-    override fun getItemCount(): Int {
-        return itemModel?.size ?: 0
-    }
-
-
-    abstract inner class BaseViewHolder<in T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        abstract fun bind(itemModel: T)
-
-    }
-
-
-    inner class FilmViewHolder<T>(itemView: View) : BaseViewHolder<T>(itemView) {
-        internal var binding: SmallFilmItemBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
-        }
-
-        override fun bind(itemModel: T) {
-            (itemModel as? FilmModel)?.let {
-                binding?.setVariable(BR.film, it)
-                binding?.executePendingBindings()
-            }
-        }
-    }
-
-
-    inner class PersonViewHolder<T>(itemView: View) : BaseViewHolder<T>(itemView) {
-        internal var binding: SmallPersonItemBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
-        }
-
-        override fun bind(itemModel: T) {
-            (itemModel as? PersonModel)?.let {
-                binding?.setVariable(BR.person, it)
-                binding?.executePendingBindings()
-            }
-        }
-    }
-
-
-    inner class PlanetViewHolder<T>(itemView: View) : BaseViewHolder<T>(itemView) {
-        internal var binding: SmallPlanetItemBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
-        }
-
-        override fun bind(itemModel: T) {
-            (itemModel as? PlanetModel)?.let {
-                binding?.setVariable(BR.planet, it)
-                binding?.executePendingBindings()
-            }
-        }
-    }
-
-
-    inner class SpecieViewHolder<T>(itemView: View) : BaseViewHolder<T>(itemView) {
-        internal var binding: SmallSpecieItemBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
-        }
-
-        override fun bind(itemModel: T) {
-            (itemModel as? SpecieModel)?.let {
-                binding?.setVariable(BR.specie, it)
-                binding?.executePendingBindings()
-            }
-        }
-    }
-
-
-    inner class StarshipViewHolder<T>(itemView: View) : BaseViewHolder<T>(itemView) {
-
-        internal var binding: SmallStarshipItemBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
-        }
-
-        override fun bind(itemModel: T) {
-            (itemModel as? StarshipModel)?.let {
-                binding?.setVariable(BR.starship, it)
-                binding?.executePendingBindings()
-            }
-        }
-    }
-
-
-    inner class VehicleViewHolder<T>(itemView: View) : BaseViewHolder<T>(itemView) {
-
-        internal var binding: SmallVehicleItemBinding? = null
-
-        init {
-            binding = DataBindingUtil.bind(itemView)
-        }
-
-        override fun bind(itemModel: T) {
-            (itemModel as? VehicleModel)?.let {
-                binding?.setVariable(BR.vehicle, it)
-                binding?.executePendingBindings()
-            }
-        }
-    }
+    override fun areContentsTheSame(oldItem: MainModels, newItem: MainModels) = oldItem == newItem
 }

@@ -6,7 +6,7 @@
     <data>
         <variable
                 name="planet"
-                type="com.dani_chuks.andeladeveloper.presentation_models.PlanetModel"/>
+                type="com.dani_chuks.andeladeveloper.presentation_models.MainModels.PlanetModel"/>
     </data>
 
     <androidx.cardview.widget.CardView

@@ -10,8 +10,7 @@
 
         <variable
                 name="viewmodel"
-                type="com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel"
-                />
+                type="com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -64,7 +63,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/films_recyclerView"
                         style="@style/film_home_recycler_view_style"
-                        app:smallAdapterData="@{viewmodel.films}"
+                        app:smallAdapterData="@{viewmodel.viewState.movies}"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toEndOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@id/intro_textView"/>
@@ -73,7 +72,7 @@
                         android:id="@+id/films_progress_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{viewmodel.films.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.viewState.movies.empty}"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/films_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
@@ -92,7 +91,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/people_recyclerView"
                         style="@style/home_recycler_view_style"
-                        app:smallAdapterData="@{viewmodel.people}"
+                        app:smallAdapterData="@{viewmodel.viewState.people}"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@+id/show_all_movies_button"/>
@@ -101,7 +100,7 @@
                         android:id="@+id/people_progress_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{viewmodel.people.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.viewState.people.empty}"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/people_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
@@ -123,7 +122,7 @@
                         android:id="@+id/planets_recyclerView"
                         style="@style/home_recycler_view_style"
                         android:layout_height="120dp"
-                        app:smallAdapterData="@{viewmodel.planets}"
+                        app:smallAdapterData="@{viewmodel.viewState.planets}"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@+id/show_all_people_button"/>
@@ -132,7 +131,7 @@
                         android:id="@+id/planet_progress_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{viewmodel.planets.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.viewState.planets.empty}"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/planets_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
@@ -152,7 +151,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/vehicles_recyclerView"
                         style="@style/home_recycler_view_style"
-                        app:smallAdapterData="@{viewmodel.vehicles}"
+                        app:smallAdapterData="@{viewmodel.viewState.vehicles}"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@+id/show_all_planets_button"/>
@@ -161,7 +160,7 @@
                         android:id="@+id/vehicle_progress_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{viewmodel.vehicles.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.viewState.vehicles.empty}"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/vehicles_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
@@ -185,13 +184,13 @@
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@+id/show_all_vehicles_button"
-                        app:smallAdapterData="@{viewmodel.starships}"/>
+                        app:smallAdapterData="@{viewmodel.viewState.starships}"/>
 
                 <ProgressBar
                         android:id="@+id/starship_progress_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="@{viewmodel.starships.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.viewState.starships.empty}"
                         android:layout_marginBottom="8dp"
                         app:layout_constraintBottom_toBottomOf="@+id/starships_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
@@ -211,7 +210,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/species_recyclerView"
                         style="@style/home_recycler_view_style"
-                        app:smallAdapterData="@{viewmodel.species}"
+                        app:smallAdapterData="@{viewmodel.viewState.species}"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@+id/show_all_starships_button"/>
@@ -221,7 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:visibility="@{viewmodel.species.getValue().isEmpty()}"
+                        android:visibility="@{viewmodel.viewState.species.empty}"
                         app:layout_constraintBottom_toBottomOf="@+id/species_recyclerView"
                         app:layout_constraintEnd_toStartOf="@+id/end_guideline"
                         app:layout_constraintStart_toEndOf="@+id/start_guideline"

@@ -8,7 +8,7 @@
 
         <variable
                 name="person"
-                type="com.dani_chuks.andeladeveloper.presentation_models.PersonModel"/>
+                type="com.dani_chuks.andeladeveloper.presentation_models.MainModels.PersonModel"/>
     </data>
 
     <androidx.cardview.widget.CardView

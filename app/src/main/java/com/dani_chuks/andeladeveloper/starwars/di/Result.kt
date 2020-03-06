@@ -2,7 +2,7 @@ package com.dani_chuks.andeladeveloper.starwars.di
 
 sealed class Result<out T : Any> {
 
-    public data class Success<out T : Any>(val data: T) : Result<T>()
+    data class Success<out T : Any>(val data: T) : Result<T>()
     data class Error(val exception: Exception) : Result<Nothing>()
 
     override fun toString(): String {

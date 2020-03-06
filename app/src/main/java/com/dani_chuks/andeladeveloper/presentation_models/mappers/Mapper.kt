@@ -1,7 +1,7 @@
 package com.dani_chuks.andeladeveloper.presentation_models.mappers
 
 import android.util.Log
-import com.dani_chuks.andeladeveloper.presentation_models.*
+import com.dani_chuks.andeladeveloper.presentation_models.MainModels.*
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
@@ -10,6 +10,9 @@ import java.lang.reflect.Type
 import java.util.*
 
 object Mapper {
+
+//    TODO: Use Reified to refactor line
+//     using https://proandroiddev.com/how-reified-type-makes-kotlin-so-much-better-7ae539ed0304
 
     var gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             .create()
@@ -21,8 +24,8 @@ object Mapper {
             val jsonString = gson.toJson(input)
             tp = gson.fromJson(jsonString, type)
             return tp
-        } catch (exception: JsonSyntaxException) {
-            Log.d("TAG", type.toString() + ":  ", exception)
+        } catch (exception: Throwable) {
+            Log.d("TAG", "$type:  ", exception)
         }
 
         return null

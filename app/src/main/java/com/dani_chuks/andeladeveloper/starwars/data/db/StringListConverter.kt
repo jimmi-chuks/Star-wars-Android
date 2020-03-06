@@ -21,4 +21,8 @@ class StringListConverter {
         val gson = Gson()
         return gson.toJson(list)
     }
+
+    interface Source<out T> {
+        fun nextT(): T
+    }
 }

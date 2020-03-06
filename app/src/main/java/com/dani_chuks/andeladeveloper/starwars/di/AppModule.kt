@@ -5,15 +5,32 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
-import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.DatabaseInfo
-import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.DefaultDispatcher
-import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.IoDispatcher
-import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.MainDispatcher
 import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
 import com.dani_chuks.andeladeveloper.starwars.data.db.remote.ApiService
-import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.film.FilmRemoteDataSource
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.film.FilmRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.film.FilmRepositoryImpl
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.people.PeopleRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.people.PeopleRepositoryImpl
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.people.PersonRemoteDataSource
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.planet.PlanetRemoteDataSource
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.planet.PlanetRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.planet.PlanetRepositoryImpl
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.specie.SpecieRemoteDataSource
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.specie.SpecieRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.specie.SpecieRepositoryImpl
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.starship.StarShipRepositoryImpl
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.starship.StarshipRemoteDataSource
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.starship.StarshipRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.vehicle.VehicleRemoteDataSource
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.vehicle.VehicleRepository
+import com.dani_chuks.andeladeveloper.starwars.data.db.repository.vehicle.VehicleRepositoryImpl
+import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.DatabaseInfo
+import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.DefaultDispatcher
+import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.IoDispatcher
+import com.dani_chuks.andeladeveloper.starwars.di.qualifiers.MainDispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -96,10 +113,10 @@ class AppModule {
 
     @Provides
     @Reusable
-    fun providesPersonRepository(appDatabase: AppDatabase,
-                                          personRemoteDataSource: PersonRemoteDataSource,
-                                          preferenceManager: SharedPreferenceManager): PersonRepository {
-        return PersonRepository(appDatabase, personRemoteDataSource, preferenceManager)
+    fun providesPeopleRepository(appDatabase: AppDatabase,
+                                 personRemoteDataSource: PersonRemoteDataSource,
+                                 preferenceManager: SharedPreferenceManager): PeopleRepository {
+        return PeopleRepositoryImpl(appDatabase, personRemoteDataSource, preferenceManager)
     }
 
     @Provides
@@ -113,7 +130,7 @@ class AppModule {
     fun providesFilmRepository(appDatabase: AppDatabase,
                                filmRemoteDataSource: FilmRemoteDataSource,
                                preferenceManager: SharedPreferenceManager): FilmRepository {
-        return FilmRepository(appDatabase, filmRemoteDataSource, preferenceManager)
+        return FilmRepositoryImpl(appDatabase, filmRemoteDataSource, preferenceManager)
     }
 
     @Provides
@@ -127,7 +144,7 @@ class AppModule {
     fun providesPlanetRepository(planetRemoteDataSource: PlanetRemoteDataSource,
                                  appDatabase: AppDatabase,
                                  preferenceManager: SharedPreferenceManager): PlanetRepository {
-        return PlanetRepository(planetRemoteDataSource, appDatabase, preferenceManager)
+        return PlanetRepositoryImpl(planetRemoteDataSource, appDatabase, preferenceManager)
     }
 
     @Provides
@@ -141,7 +158,7 @@ class AppModule {
     fun providesSpecieRepository(appDatabase: AppDatabase,
                                  specieRemoteDataSource: SpecieRemoteDataSource,
                                  preferenceManager: SharedPreferenceManager): SpecieRepository {
-        return SpecieRepository(appDatabase, specieRemoteDataSource, preferenceManager)
+        return SpecieRepositoryImpl(appDatabase, specieRemoteDataSource, preferenceManager)
     }
 
     @Provides
@@ -155,7 +172,7 @@ class AppModule {
     fun providesVehicleRepository(vehicleRemoteDataSource: VehicleRemoteDataSource,
                                   appDatabase: AppDatabase,
                                   preferenceManager: SharedPreferenceManager): VehicleRepository {
-        return VehicleRepository(vehicleRemoteDataSource, appDatabase, preferenceManager)
+        return VehicleRepositoryImpl(vehicleRemoteDataSource, appDatabase, preferenceManager)
     }
 
     @Provides
@@ -169,6 +186,6 @@ class AppModule {
     fun providesStarshipRepository(remoteDataSource: StarshipRemoteDataSource,
                                    appDatabase: AppDatabase,
                                    preferenceManager: SharedPreferenceManager): StarshipRepository {
-        return StarshipRepository(remoteDataSource, appDatabase, preferenceManager)
+        return StarShipRepositoryImpl(remoteDataSource, appDatabase, preferenceManager)
     }
 }

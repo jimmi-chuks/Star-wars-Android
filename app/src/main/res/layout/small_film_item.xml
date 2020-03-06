@@ -8,7 +8,7 @@
 
         <variable
                 name="film"
-                type="com.dani_chuks.andeladeveloper.presentation_models.FilmModel"/>
+                type="com.dani_chuks.andeladeveloper.presentation_models.MainModels.FilmModel"/>
     </data>
     <androidx.cardview.widget.CardView
             style="@style/card_view_small"
@@ -29,7 +29,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:text="@{@string/card_title(film.title)}"
                     app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +41,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:ellipsize="end"
                     android:text="@{@string/card_opening_crawl(film.openingCrawl)}"
@@ -56,7 +54,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
                     android:text="@{film.releaseDate}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
