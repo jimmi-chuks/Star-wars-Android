@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 abstract class MVIActivity<S, E, A, V : MVIViewmodel<S, E, A>> : AppCompatActivity() {
 
-    abstract var viewModel: V
+    abstract val viewModel: V
 
     abstract fun viewEvents(): Flow<E>
 
@@ -53,5 +53,4 @@ abstract class MVIActivity<S, E, A, V : MVIViewmodel<S, E, A>> : AppCompatActivi
         subscribeToViewEvents()
         subscribeToActions()
     }
-
 }

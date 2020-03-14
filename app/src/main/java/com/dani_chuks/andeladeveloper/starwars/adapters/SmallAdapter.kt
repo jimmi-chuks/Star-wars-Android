@@ -53,9 +53,9 @@ class SmallAdapter : ListAdapter<MainModels, SmallViewHolder<MainModels>>(MainMo
         }
     }
 
-    override fun getItemViewType(position: Int): Int = getItem(position)?.modelType?.ordinal?: 0
+    override fun getItemViewType(position: Int): Int = getItem(position)?.modelType?.ordinal ?: 0
 
-    fun viewTypeFromInt(viewType: Int): ItemModelType = values()[viewType]
+    private fun viewTypeFromInt(viewType: Int): ItemModelType = values()[viewType]
 
     override fun onBindViewHolder(holder: SmallViewHolder<MainModels>, position: Int) {
         holder.bind(getItem(position))
@@ -63,9 +63,9 @@ class SmallAdapter : ListAdapter<MainModels, SmallViewHolder<MainModels>>(MainMo
 }
 
 class MainModelDiffCallback : DiffUtil.ItemCallback<MainModels>() {
-    override fun areItemsTheSame(oldItem: MainModels, newItem: MainModels): Boolean {
-        return oldItem.url == newItem.url && oldItem.modelType == newItem.modelType
-    }
+    override fun areItemsTheSame(oldItem: MainModels, newItem: MainModels): Boolean =
+            oldItem.url == newItem.url && oldItem.modelType == newItem.modelType
+
 
     override fun areContentsTheSame(oldItem: MainModels, newItem: MainModels) = oldItem == newItem
 }

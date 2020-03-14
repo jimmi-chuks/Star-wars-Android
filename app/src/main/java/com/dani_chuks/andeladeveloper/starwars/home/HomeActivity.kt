@@ -1,7 +1,6 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
 import android.os.Bundle
-import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.dani_chuks.andeladeveloper.starwars.R
@@ -50,16 +49,10 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
     }
 
     override fun render(state: HomeState) {
-        Log.d("PLOPP", "render: state.toString()")
         // Render is handled using data binding
-//        binding.uiState = state
     }
 
     override fun handleAction(action: HomeViewAction) {
-
-    }
-
-    fun initializeRecyclerViews(){
 
     }
 }
