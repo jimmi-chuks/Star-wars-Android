@@ -110,10 +110,9 @@
 
                 <Button
                         android:id="@+id/show_all_people_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
+                        style="@style/home_button_style"
                         android:text="@string/show_all_characters"
+                        android:textAllCaps="true"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@id/people_recyclerView"
                         tools:text="@string/show_all_characters"/>
@@ -141,9 +140,7 @@
 
                 <Button
                         android:id="@+id/show_all_planets_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
+                        style="@style/home_button_style"
                         android:text="@string/show_all_planets"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@id/planets_recyclerView"
@@ -170,9 +167,7 @@
 
                 <Button
                         android:id="@+id/show_all_vehicles_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
+                        style="@style/home_button_style"
                         android:text="@string/show_all_vehicles"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@id/vehicles_recyclerView"
@@ -200,9 +195,7 @@
 
                 <Button
                         android:id="@+id/show_all_starships_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
+                        style="@style/home_button_style"
                         android:text="@string/show_all_starships"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@id/starships_recyclerView"
@@ -229,9 +222,7 @@
 
                 <Button
                         android:id="@+id/show_all_species_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_marginTop="8dp"
+                        style="@style/home_button_style"
                         android:text="@string/show_all_species"
                         app:layout_constraintStart_toStartOf="@+id/start_guideline"
                         app:layout_constraintTop_toBottomOf="@id/species_recyclerView"

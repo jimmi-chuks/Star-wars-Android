@@ -15,7 +15,7 @@ abstract class SmallViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(item
 
 class FilmViewHolder<T>(itemView: View) : SmallViewHolder<T>(itemView) {
 
-    val binding: SmallFilmItemBinding? =  DataBindingUtil.bind(itemView)
+    val binding: SmallFilmItemBinding? = DataBindingUtil.bind(itemView)
 
     override fun bind(itemModel: T) {
         (itemModel as? FilmModel)?.let {

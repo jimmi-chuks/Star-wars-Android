@@ -11,10 +11,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.scan
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -54,7 +51,7 @@ abstract class MVIViewmodel<S, E, A> : ViewModel() {
     fun initState() {
         viewModelScope.launch(getIoContext()) {
             val startState = viewState.value ?: initialState
-            eventChannel.close()
+            eventChannel.cancel()
             eventChannel = ConflatedBroadcastChannel()
             eventChannel.asFlow()
                     .scan(startState, { oldState: S, event: E -> reduceState(oldState, event) })

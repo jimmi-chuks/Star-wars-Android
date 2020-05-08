@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/StarWars.iml" filepath="$PROJECT_DIR$/StarWars.iml" group="StarWars" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="StarWars/app" />
+      <module fileurl="file://$PROJECT_DIR$/StarWars.iml" filepath="$PROJECT_DIR$/StarWars.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/StarWars.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/StarWars.app.iml" />
     </modules>
   </component>
 </project>

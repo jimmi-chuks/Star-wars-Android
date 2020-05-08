@@ -1,28 +1,25 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db
 
 import androidx.room.TypeConverter
+import java.lang.StringBuilder
 
 import java.util.ArrayList
 
 class IntegerListConverter {
     @TypeConverter
-    fun gettingListFromString(urlIds: String): List<Int> {
-        val list = ArrayList<Int>()
-
-        val array = urlIds.split(",".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-
-        for (s in array) {
-            list.add(Integer.parseInt(s))
-        }
-        return list
-    }
+    fun gettingListFromString(urlIds: String): List<Int> =
+            urlIds.split(",".toRegex())
+                    .dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+                    .map { Integer.parseInt(it) }
+                    .toList()
 
     @TypeConverter
     fun writingStringFromList(list: List<Int>): String {
-        var urlId = ""
-        for (i in list) {
-            urlId += ",$i"
+        val stringBuilder = StringBuilder()
+        list.forEach { 
+            stringBuilder.append(",$it")
         }
-        return urlId
+        return stringBuilder.toString()
     }
 }

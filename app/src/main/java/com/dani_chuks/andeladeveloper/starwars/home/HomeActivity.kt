@@ -1,12 +1,14 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.dani_chuks.andeladeveloper.starwars.R
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIActivity
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.clicks
 import com.dani_chuks.andeladeveloper.starwars.databinding.ActivityHomeBinding
+import com.dani_chuks.andeladeveloper.starwars.util.DialogBuilder
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -43,7 +45,7 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
 
     override fun viewEvents(): Flow<HomeEvent> {
         val flows = listOf(
-                binding.showAllStarshipsButton.clicks().map{  HomeEvent.ShowAllStarShipsEvent}
+                binding.showAllStarshipsButton.clicks().map { HomeEvent.ShowAllStarShipsEvent }
         )
         return flows.asFlow().flattenMerge(flows.size)
     }
@@ -53,6 +55,18 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
     }
 
     override fun handleAction(action: HomeViewAction) {
+        Log.e("PLOPP", " received Action: ${action.toString().substring(0, 12)}")
+        buildDialog()
+    }
 
+    fun buildDialog(){
+        DialogBuilder(this)
+                .setMessage("Testing")
+                .setCancellable(false)
+                .setPositiveAction("Ok") { Log.e("PLOPP", " positive button clicked") }
+                .setNegativeAction("Close"){ Log.e("PLOPP", " Negative button clicked") }
+                .setDialogDismissListener { Log.e("PLOPP", "Dialog Dismissed") }
+                .build()
+                .show()
     }
 }

@@ -12,7 +12,7 @@ object CustomBindingAdapter {
 
     @BindingAdapter("android:visibility")
     @JvmStatic
-    fun setPaddingLeft(view: View, visible: Boolean) {
+    fun setVisibility(view: View, visible: Boolean) {
         if (!visible) {
             view.visibility = View.GONE
         } else {

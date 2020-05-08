@@ -21,7 +21,11 @@ import com.dani_chuks.andeladeveloper.starwars.home.HomeModule
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 @Module
 abstract class ActivityBuilder {
 
