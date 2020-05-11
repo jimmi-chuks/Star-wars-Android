@@ -50,11 +50,8 @@ abstract class MVIViewmodel<S, E, A> : ViewModel() {
 
     fun initState() {
         viewModelScope.launch(getIoContext()) {
-            val startState = viewState.value ?: initialState
-            eventChannel.cancel()
-            eventChannel = ConflatedBroadcastChannel()
             eventChannel.asFlow()
-                    .scan(startState, { oldState: S, event: E -> reduceState(oldState, event) })
+                    .scan(initialState, { oldState: S, event: E -> reduceState(oldState, event) })
                     .distinctUntilChanged()
                     .collect { _viewState.postValue(it) }
         }

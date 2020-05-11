@@ -38,8 +38,9 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         binding.setLifecycleOwner(this)
         initViewModel()
-        subscribeToStateEventAndAction()
         binding.viewmodel = viewModel
+        viewModel.initState()
+        subscribe()
         viewModel.onEvent(HomeEvent.FetchAllItems)
     }
 
@@ -48,10 +49,6 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
                 binding.showAllStarshipsButton.clicks().map { HomeEvent.ShowAllStarShipsEvent }
         )
         return flows.asFlow().flattenMerge(flows.size)
-    }
-
-    override fun render(state: HomeState) {
-        // Render is handled using data binding
     }
 
     override fun handleAction(action: HomeViewAction) {
