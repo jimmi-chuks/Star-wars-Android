@@ -3,7 +3,6 @@ package com.dani_chuks.andeladeveloper.starwars.data.db.repository.specie
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.DaoPredicate
 import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Specie
-import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.flow.Flow
 
 interface SpecieRepository {

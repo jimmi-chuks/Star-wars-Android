@@ -10,21 +10,19 @@ import com.dani_chuks.andeladeveloper.starwars.data.db.repository.planet.PlanetR
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.specie.SpecieRepository
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.starship.StarshipRepository
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.vehicle.VehicleRepository
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.*
 import com.dani_chuks.andeladeveloper.starwars.di.Result
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class HomeViewModelInteractor @Inject constructor(
-        val filmRepository: FilmRepository,
-        val planetRepository: PlanetRepository,
-        val specieRepository: SpecieRepository,
-        val starshipRepository: StarshipRepository,
-        val vehicleRepository: VehicleRepository,
-        val personRepository: PeopleRepository) {
+class HomeInteractor @Inject constructor(
+        private val filmRepository: FilmRepository,
+        private val planetRepository: PlanetRepository,
+        private val specieRepository: SpecieRepository,
+        private val starshipRepository: StarshipRepository,
+        private val vehicleRepository: VehicleRepository,
+        private val personRepository: PeopleRepository) {
 
     fun loadPeople(): Flow<List<Person>?> = personRepository.getPeopleByPredicateAsFlow(GetAllBySize(ITEM_LIMIT))
 

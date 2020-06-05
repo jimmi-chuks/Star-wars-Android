@@ -1,7 +1,6 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository.people
 
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.DaoPredicate
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Person
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.flow.Flow
@@ -10,8 +9,6 @@ interface PeopleRepository {
     suspend fun getPeopleByPredicate(predicate: DaoPredicate): List<Person>
 
     suspend fun fetchAndSync(page: Int)
-
-//    suspend fun deleteAll(): Int
 
     suspend fun getPersonById(stringUrl: String): Result<Person>
 
