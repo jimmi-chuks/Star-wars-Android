@@ -29,7 +29,7 @@ abstract class MVIActivity<S, E, A, V : MVIViewmodel<S, E, A>> : AppCompatActivi
 
     @FlowPreview
     private fun subscribeToActions() {
-        viewModel.actionFlow
+        viewModel.actionFlow()
                 .onEach { handleAction(it) }
                 .launchIn(lifecycleScope)
     }

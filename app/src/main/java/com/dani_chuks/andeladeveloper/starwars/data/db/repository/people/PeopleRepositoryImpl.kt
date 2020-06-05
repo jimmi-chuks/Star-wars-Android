@@ -5,7 +5,6 @@ import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.*
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Person
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.coroutineScope
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class PeopleRepositoryImpl @Inject
-constructor(private val appDatabase: AppDatabase,
+constructor(appDatabase: AppDatabase,
             val remoteDataSource: PersonRemoteDataSource,
             private val preferenceManager: SharedPreferenceManager): PeopleRepository {
 

@@ -7,7 +7,6 @@ import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.DaoPredicate
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.GetAllAlphabetically
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.GetAllBySize
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.coroutineScope

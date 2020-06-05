@@ -10,14 +10,12 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @FlowPreview
 @Suppress("UNCHECKED_CAST")
-class HomeViewModelFactory @Inject constructor(
-        private val viewModelInteractor: HomeViewModelInteractor,
-        private val iDispatchersProvider: IDispatcherProvider)
+class HomeViewModelFactory @Inject constructor(private val homeModelStore: HomeModelStore)
     : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(HomeViewModel::class.java))
-            return HomeViewModel(viewModelInteractor, iDispatchersProvider) as T
+            return HomeViewModel(homeModelStore) as T
         throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }

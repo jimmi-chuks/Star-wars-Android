@@ -46,7 +46,7 @@ abstract class MVIFragment<S, E, A, V : MVIViewmodel<S, E, A>> : Fragment() {
 
     @FlowPreview
     private fun subscribeToActions() {
-        viewModel.actionFlow
+        viewModel.actionFlow()
                 .onEach { handleAction(it) }
                 .launchIn(viewLifecycleOwner.lifecycleScope)
     }

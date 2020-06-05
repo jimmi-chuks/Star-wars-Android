@@ -1,51 +1,8 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
 import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
-import com.dani_chuks.andeladeveloper.presentation_models.MainModels
 import com.dani_chuks.andeladeveloper.presentation_models.MainModels.*
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.Intent
-import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film
-
-//val getUserChanges = getUsersUseCase()
-//        .onEach { Log.d("###", "[MAIN_VM] Emit users.size=${it.size}") }
-//        .map {
-//            val items = it.map(::UserItem)
-//            PartialChange.GetUser.Data(items) as PartialChange.GetUser
-//        }
-//        .onStart { emit(PartialChange.GetUser.Loading) }
-//        .catch { emit(PartialChange.GetUser.Error(it)) }
-//
-//val refreshChanges = flow { emit(refreshGetUsersUseCase()) }
-//        .map { PartialChange.Refresh.Success as PartialChange.Refresh }
-//        .onStart { emit(PartialChange.Refresh.Loading) }
-//        .catch { emit(PartialChange.Refresh.Failure(it)) }
-//
-//return merge(
-//filterIsInstance<ViewIntent.Initial>()
-//.logIntent()
-//.flatMapConcat { getUserChanges },
-//filterIsInstance<ViewIntent.Refresh>()
-//.filter { _viewStateD.value?.let { !it.isLoading && it.error === null } ?: false }
-//.logIntent()
-//.flatMapFirst { refreshChanges },
-//filterIsInstance<ViewIntent.Retry>()
-//.filter { _viewStateD.value?.error != null }
-//.logIntent()
-//.flatMapFirst { getUserChanges },
-//filterIsInstance<ViewIntent.RemoveUser>()
-//.logIntent()
-//.map { it.user }
-//.flatMapMerge { userItem ->
-//    flow {
-//        try {
-//            removeUserUseCase(userItem.toDomain())
-//            emit(PartialChange.RemoveUser.Success(userItem))
-//        } catch (e: Exception) {
-//            emit(PartialChange.RemoveUser.Failure(userItem, e))
-//        }
-//    }
-//}
-//)
 
 data class HomeState(
         val initialLoading: Boolean = true,

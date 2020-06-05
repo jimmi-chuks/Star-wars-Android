@@ -1,6 +1,5 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository.planet
 
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Planet
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.flow.Flow

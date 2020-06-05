@@ -7,17 +7,15 @@ import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.DaoPredicate
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.GetAllAlphabetically
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.GetAllBySize
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Vehicle
 import com.dani_chuks.andeladeveloper.starwars.di.Result
-import com.dani_chuks.andeladeveloper.starwars.home.HomeViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class VehicleRepositoryImpl @Inject
 constructor(private val remoteDataSource: VehicleRemoteDataSource,
-            private val appDatabase: AppDatabase,
+            appDatabase: AppDatabase,
             private val preferenceManager: SharedPreferenceManager): VehicleRepository {
 
     private val vehicleDao = appDatabase.vehicleDao()

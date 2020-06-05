@@ -4,7 +4,6 @@ import com.dani_chuks.andeladeveloper.starwars.data.AppConstants
 import com.dani_chuks.andeladeveloper.starwars.data.SharedPreferenceManager
 import com.dani_chuks.andeladeveloper.starwars.data.db.DbUtils
 import com.dani_chuks.andeladeveloper.starwars.data.db.local.AppDatabase
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Planet
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.coroutineScope

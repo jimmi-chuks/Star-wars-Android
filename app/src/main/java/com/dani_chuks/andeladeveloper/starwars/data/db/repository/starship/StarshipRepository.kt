@@ -1,9 +1,7 @@
 package com.dani_chuks.andeladeveloper.starwars.data.db.repository.starship
 
 import com.dani_chuks.andeladeveloper.starwars.data.db.repository.DaoPredicate
-import com.dani_chuks.andeladeveloper.starwars.data.models.EntityList
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.StarShip
-import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.flow.Flow
 
 interface StarshipRepository {

@@ -14,23 +14,22 @@ import dagger.Reusable
 @Module
 class HomeModule {
 
-    @Provides
-    @Reusable
-    fun providesViewModelInteractor(
-            filmRepository: FilmRepository,
-            planetRepository: PlanetRepository,
-            specieRepository: SpecieRepository,
-            starshipRepository: StarshipRepository,
-            vehicleRepository: VehicleRepository,
-            personRepository: PeopleRepository): HomeViewModelInteractor {
-        return HomeViewModelInteractor(filmRepository, planetRepository, specieRepository, starshipRepository, vehicleRepository, personRepository)
-    }
-
-    @Provides
-    @Reusable
-    fun providesHomeViewMOdelFactory(viewModelInteractor: HomeViewModelInteractor, iDispatchersProvider: IDispatcherProvider): HomeViewModelFactory {
-        return HomeViewModelFactory(viewModelInteractor, iDispatchersProvider)
-    }
-
+//    @Provides
+//    @Reusable
+//    fun providesViewModelInteractor(
+//            filmRepository: FilmRepository,
+//            planetRepository: PlanetRepository,
+//            specieRepository: SpecieRepository,
+//            starshipRepository: StarshipRepository,
+//            vehicleRepository: VehicleRepository,
+//            personRepository: PeopleRepository): HomeViewModelInteractor {
+//        return HomeViewModelInteractor(filmRepository, planetRepository, specieRepository, starshipRepository, vehicleRepository, personRepository)
+//    }
+//
+//    @Provides
+//    @Reusable
+//    fun providesHomeViewMOdelFactory(viewModelInteractor: HomeViewModelInteractor, iDispatchersProvider: IDispatcherProvider): HomeViewModelFactory {
+//        return HomeViewModelFactory(viewModelInteractor, iDispatchersProvider)
+//    }
 
 }

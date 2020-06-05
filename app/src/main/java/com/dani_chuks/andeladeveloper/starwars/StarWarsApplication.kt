@@ -1,6 +1,5 @@
 package com.dani_chuks.andeladeveloper.starwars
 
-import android.app.Activity
 import android.app.Application
 import com.dani_chuks.andeladeveloper.starwars.di.DaggerAppComponent
 import dagger.android.AndroidInjector
@@ -15,15 +14,11 @@ class StarWarsApplication : Application(), HasAndroidInjector {
 
     override fun onCreate() {
         super.onCreate()
-        //        Fabric.with(this, new Crashlytics());
         DaggerAppComponent.builder()
                 .application(this)
                 .build()
                 .inject(this)
-
     }
 
-    override fun androidInjector(): AndroidInjector<Any> {
-        return activityDispatchingAndroidInjector
-    }
+    override fun androidInjector(): AndroidInjector<Any> = activityDispatchingAndroidInjector
 }

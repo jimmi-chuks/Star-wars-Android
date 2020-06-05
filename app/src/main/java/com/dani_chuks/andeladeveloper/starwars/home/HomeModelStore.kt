@@ -5,21 +5,22 @@ import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
 import com.dani_chuks.andeladeveloper.presentation_models.mappers.Mapper
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.*
 import com.dani_chuks.andeladeveloper.starwars.di.IDispatcherProvider
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@FlowPreview
 @ExperimentalCoroutinesApi
-class HomeModelStore(
-        private val interactor: HomeViewModelInteractor,
-        override val scope: CoroutineScope,
+class HomeModelStore @Inject constructor(
+        private val interactor: HomeInteractor,
         override val iDispatcherProvider: IDispatcherProvider
 ): ModelStore<HomeState, HomeViewAction>() {
 
     override val startingState: HomeState = HomeState()
 
-    override fun Flow<Intent<HomeState>>.toPartialChangeFlow(): Flow<StoreResult<HomeState, HomeViewAction>> {
+    override val scope: CoroutineScope = CoroutineScope( SupervisorJob() + iDispatcherProvider.io)
+
+    override fun Flow<Intent<HomeState>>.intentProcessorFlow(): Flow<StoreResult<HomeState, HomeViewAction>> {
         return emptyFlow()
     }
 
@@ -58,17 +59,13 @@ class HomeModelStore(
         flow.onStart { emit(StoreResult(HomeIntents.ObserveItems(type))) }
     }
 
-    val movieFlow = interactor.loadFilms()
+    private val movieFlow = interactor.loadFilms()
             .filterNotNull()
             .map { Mapper.mapFilms(it) }
             .filterNotNull()
-            .map {
-                StoreResult<HomeState, HomeViewAction>(
-                        intent { copy(movies = it) }
-                )
-            }
+            .map { StoreResult<HomeState, HomeViewAction>(intent { copy(movies = it) }) }
 
-    val peopleFlow = interactor.loadPeople()
+    private val peopleFlow = interactor.loadPeople()
             .filterNotNull()
             .map { Mapper.mapPeople(it) }
             .filterNotNull()
@@ -76,7 +73,7 @@ class HomeModelStore(
                 StoreResult<HomeState, HomeViewAction>( intent { copy(people = it) } )
             }
 
-    val planetsFlow = interactor.loadPlanets()
+    private val planetsFlow = interactor.loadPlanets()
             .filterNotNull()
             .map { Mapper.mapPlanets(it) }
             .filterNotNull()
@@ -84,7 +81,7 @@ class HomeModelStore(
                 StoreResult<HomeState, HomeViewAction>( intent { copy(planets = it) } )
             }
 
-    val speciesFlow = interactor.loadPeople()
+    private val speciesFlow = interactor.loadPeople()
             .filterNotNull()
             .map { Mapper.mapSpecies(it) }
             .filterNotNull()
@@ -92,7 +89,7 @@ class HomeModelStore(
                 StoreResult<HomeState, HomeViewAction>( intent { copy(species = it) } )
             }
 
-    val vehicleFlow = interactor.loadVehicles()
+    private val vehicleFlow = interactor.loadVehicles()
             .filterNotNull()
             .map { Mapper.mapVehicles(it) }
             .filterNotNull()
@@ -100,7 +97,7 @@ class HomeModelStore(
                 StoreResult<HomeState, HomeViewAction>( intent { copy(vehicles = it) } )
             }
 
-    val starshipsFlow = interactor.loadStarships()
+    private val starshipsFlow = interactor.loadStarships()
             .filterNotNull()
             .map { Mapper.mapStarships(it) }
             .filterNotNull()
