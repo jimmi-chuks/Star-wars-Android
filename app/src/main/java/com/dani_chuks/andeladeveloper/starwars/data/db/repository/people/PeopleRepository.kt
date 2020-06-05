@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface PeopleRepository {
     suspend fun getPeopleByPredicate(predicate: DaoPredicate): List<Person>
 
-    suspend fun fetchAndSync(page: Int): Result<EntityList<Person>>
+    suspend fun fetchAndSync(page: Int)
 
 //    suspend fun deleteAll(): Int
 

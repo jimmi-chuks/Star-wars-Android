@@ -1,10 +1,60 @@
 package com.dani_chuks.andeladeveloper.starwars.home
 
+import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
+import com.dani_chuks.andeladeveloper.presentation_models.MainModels
 import com.dani_chuks.andeladeveloper.presentation_models.MainModels.*
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.Intent
+import com.dani_chuks.andeladeveloper.starwars.data.models.entities.Film
 
+//val getUserChanges = getUsersUseCase()
+//        .onEach { Log.d("###", "[MAIN_VM] Emit users.size=${it.size}") }
+//        .map {
+//            val items = it.map(::UserItem)
+//            PartialChange.GetUser.Data(items) as PartialChange.GetUser
+//        }
+//        .onStart { emit(PartialChange.GetUser.Loading) }
+//        .catch { emit(PartialChange.GetUser.Error(it)) }
+//
+//val refreshChanges = flow { emit(refreshGetUsersUseCase()) }
+//        .map { PartialChange.Refresh.Success as PartialChange.Refresh }
+//        .onStart { emit(PartialChange.Refresh.Loading) }
+//        .catch { emit(PartialChange.Refresh.Failure(it)) }
+//
+//return merge(
+//filterIsInstance<ViewIntent.Initial>()
+//.logIntent()
+//.flatMapConcat { getUserChanges },
+//filterIsInstance<ViewIntent.Refresh>()
+//.filter { _viewStateD.value?.let { !it.isLoading && it.error === null } ?: false }
+//.logIntent()
+//.flatMapFirst { refreshChanges },
+//filterIsInstance<ViewIntent.Retry>()
+//.filter { _viewStateD.value?.error != null }
+//.logIntent()
+//.flatMapFirst { getUserChanges },
+//filterIsInstance<ViewIntent.RemoveUser>()
+//.logIntent()
+//.map { it.user }
+//.flatMapMerge { userItem ->
+//    flow {
+//        try {
+//            removeUserUseCase(userItem.toDomain())
+//            emit(PartialChange.RemoveUser.Success(userItem))
+//        } catch (e: Exception) {
+//            emit(PartialChange.RemoveUser.Failure(userItem, e))
+//        }
+//    }
+//}
+//)
 
 data class HomeState(
         val initialLoading: Boolean = true,
+        val moviesLoading: Boolean = true,
+        val peopleLoading: Boolean = true,
+        val speciesLoading: Boolean = true,
+        val planetsLoading: Boolean = true,
+        val starshipsLoading: Boolean = true,
+        val vehiclesLoading: Boolean = true,
         val movies: List<FilmModel> = emptyList(),
         val people: List<PersonModel> = emptyList(),
         val species: List<SpecieModel> = emptyList(),
@@ -13,50 +63,46 @@ data class HomeState(
         val starships: List<StarshipModel> = emptyList()
 )
 
-sealed class HomeViewAction{
-    object ShowAllMoviesAction: HomeViewAction()
-    object ShowAllPeopleAction: HomeViewAction()
-    object ShowAllSpeciesAction: HomeViewAction()
-    object ShowAllPlanetsAction: HomeViewAction()
-    object ShowAllVehiclesAction: HomeViewAction()
-    object ShowAllStarShipsAction: HomeViewAction()
+sealed class HomeViewAction {
+    data class ShowAllAction(val itemModelType: ItemModelType) : HomeViewAction()
 
-    data class ShowMovieAction(val movieURL: String): HomeViewAction()
-    data class ShowPersonAction(val personURL: String): HomeViewAction()
-    data class ShowSpecieAction(val specieURL: String): HomeViewAction()
-    data class ShowPlanetAction(val planetURL: String): HomeViewAction()
-    data class ShowVehicleAction(val vehicleURL: String): HomeViewAction()
-    data class ShowStarShipAction(val starShipURL: String): HomeViewAction()
+    data class ShowItemAction(val type: ItemModelType, val itemURL: String) : HomeViewAction()
 }
 
 
-sealed class HomeEvent{
-    object FetchAllItems: HomeEvent()
-    object FetchAllMovieEvent: HomeEvent()
-    object FetchAllPersonEvent: HomeEvent()
-    object FetchAllSpecieEvent: HomeEvent()
-    object FetchAllPlanetEvent: HomeEvent()
-    object FetchAllVehicleEvent: HomeEvent()
-    object FetchAllStarShipEvent: HomeEvent()
+sealed class HomeEvent {
+    object InitEvents : HomeEvent()
 
-    object ShowAllMoviesEvent: HomeEvent()
-    object ShowAllPeopleEvent: HomeEvent()
-    object ShowAllSpeciesEvent: HomeEvent()
-    object ShowAllPlanetsEvent: HomeEvent()
-    object ShowAllVehiclesEvent: HomeEvent()
-    object ShowAllStarShipsEvent: HomeEvent()
+    data class FetchAllEvent(val type: ItemModelType) : HomeEvent()
 
-    data class ShowMovieEvent(val movieURL: String): HomeEvent()
-    data class ShowPersonEvent(val personURL: String): HomeEvent()
-    data class ShowSpecieEvent(val specieURL: String): HomeEvent()
-    data class ShowPlanetEvent(val planetURL: String): HomeEvent()
-    data class ShowVehicleEvent(val vehicleURL: String): HomeEvent()
-    data class ShowStarShipEvent(val starShipURL: String): HomeEvent()
+    data class ShowAllEvent(val itemModelType: ItemModelType) : HomeEvent()
 
-    data class MoviesFetchedEvent(val movies: List<FilmModel>): HomeEvent()
-    data class PeopleFetchedEvent(val people: List<PersonModel>): HomeEvent()
-    data class SpeciesFetchedEvent(val species: List<SpecieModel>): HomeEvent()
-    data class PlanetsFetchedEvent(val planets: List<PlanetModel>): HomeEvent()
-    data class VehiclesFetchedEvent(val vehicles: List<VehicleModel>): HomeEvent()
-    data class StarShipsFetchedEvent(val starships: List<StarshipModel>): HomeEvent()
+    data class ShowItemEvent(val itemURL: String, val itemModelType: ItemModelType) : HomeEvent()
+}
+
+sealed class HomeIntents : Intent<HomeState> {
+    object Init : HomeIntents() {
+        override fun reduce(oldState: HomeState) = oldState
+    }
+
+    data class ObserveItems(val itemModelType: ItemModelType) : HomeIntents() {
+        override fun reduce(oldState: HomeState) =
+                when (itemModelType) {
+                    ItemModelType.FILM -> oldState.copy(moviesLoading = true)
+                    ItemModelType.PERSON -> oldState.copy(peopleLoading = true)
+                    ItemModelType.PLANET -> oldState.copy(planetsLoading = true)
+                    ItemModelType.SPECIE -> oldState.copy(speciesLoading = true)
+                    ItemModelType.STARSHIP -> oldState.copy(starshipsLoading = true)
+                    ItemModelType.VEHICLE -> oldState.copy(vehiclesLoading = true)
+                }
+    }
+
+    data class ShowItemIntent(val itemURL: String, val itemModelType: ItemModelType) : HomeIntents() {
+        override fun reduce(oldState: HomeState) = oldState
+    }
+
+    data class ShowAllIntent(val itemModelType: ItemModelType) : HomeIntents() {
+        override fun reduce(oldState: HomeState) = oldState
+    }
+
 }

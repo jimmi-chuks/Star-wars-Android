@@ -22,7 +22,7 @@ interface SpecieRepository {
 
     suspend fun insertItemList(t: List<Specie>)
 
-    suspend fun fetchAndSync(page: Int): Result<EntityList<Specie>>
+    suspend fun fetchAndSync(page: Int)
 
     fun getSpeciesByPredicateAsFlow(predicate: DaoPredicate): Flow<List<Specie>?>
 

@@ -1,6 +1,6 @@
 package com.dani_chuks.andeladeveloper.starwars.base.mvi
 
-//import kotlinx.coroutines.flow.scan
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,37 +24,26 @@ abstract class MVIViewmodel<S, E, A> : ViewModel() {
     val viewState: LiveData<S>
         get() = _viewState
 
-    private var eventChannel: ConflatedBroadcastChannel<E> = ConflatedBroadcastChannel()
-
-    val actionChannel: BroadcastChannel<A> = BroadcastChannel(1)
-
-    abstract val initialState: S
+    abstract val modelStore: ModelStore<S, A>
 
     abstract val dispatcherProvider: IDispatcherProvider
+
+    abstract fun toIntent(event: E): Intent<S>
+
+    val actionFlow = modelStore.actions()
 
     open val exceptionHandler: CoroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
     }
 
-    abstract fun reduceState(state: S, event: E): S
-
-    abstract fun getIoContext(): CoroutineContext
-
     fun onEvent(event: E){
-        viewModelScope.launch( dispatcherProvider.io){ eventChannel.offer(event)}
-    }
-
-    fun onAction(action: A){
-        viewModelScope.launch( dispatcherProvider.io){ actionChannel.offer(action)}
+        modelStore.process(toIntent(event))
     }
 
     fun initState() {
-        viewModelScope.launch(getIoContext()) {
-            eventChannel.asFlow()
-                    .scan(initialState, { oldState: S, event: E -> reduceState(oldState, event) })
-                    .distinctUntilChanged()
-                    .collect { _viewState.postValue(it) }
-        }
+        modelStore.state()
+                .onEach { _viewState.postValue(it) }
+                .launchIn(viewModelScope)
     }
 
 }

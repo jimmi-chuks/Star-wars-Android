@@ -18,7 +18,6 @@ class FilmRepositoryImpl @Inject constructor(val appDatabase: AppDatabase,
                                              val filmRemoteDataSource: FilmRemoteDataSource,
                                              private val preferenceManager: SharedPreferenceManager) : FilmRepository {
 
-
     val filmDao = appDatabase.filmDao()
 
     override suspend fun getFilmsByPredicate(predicate: DaoPredicate): List<Film> {
@@ -28,7 +27,6 @@ class FilmRepositoryImpl @Inject constructor(val appDatabase: AppDatabase,
             else -> filmDao.all()
         }
     }
-
 
     suspend fun all(): List<Film> {
         return filmDao.all()
@@ -73,7 +71,7 @@ class FilmRepositoryImpl @Inject constructor(val appDatabase: AppDatabase,
 
     override fun getItemBySizeAsFlow(limit: Int): Flow<List<Film>?> = filmDao.getItemBySizeAsFlow(limit)
 
-    override suspend fun fetchAndSync(): Result<EntityList<Film>> = coroutineScope {
+    override suspend fun fetchAndSync() = coroutineScope {
         val allFilms = filmRemoteDataSource.getAllFilms()
         println("fetch and sync all Films ==> $allFilms")
         if (allFilms is Result.Success) {
@@ -84,7 +82,6 @@ class FilmRepositoryImpl @Inject constructor(val appDatabase: AppDatabase,
                 preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)
             }
         }
-        allFilms
     }
 
     override suspend fun deleteAll(): Int = coroutineScope {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PlanetRepository{
 
-    suspend fun fetchAndSync(page: Int): Result<EntityList<Planet>>
+    suspend fun fetchAndSync(page: Int): Result<Boolean>
 
     suspend fun insertItemList(planets: List<Planet>)
 

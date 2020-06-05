@@ -54,16 +54,18 @@ class PlanetRepositoryImpl @Inject constructor(
         planetDao.insertList(planets)
     }
 
-    override suspend fun fetchAndSync(page: Int): Result<EntityList<Planet>> = coroutineScope {
+    override suspend fun fetchAndSync(page: Int): Result<Boolean> = coroutineScope {
         val allPlanets = remoteDataSource.getAllPlanets(page)
         println("fetch and sync Planets from page $page ==> $allPlanets")
-        if (allPlanets is Result.Success) {
-            allPlanets.data.list?.let {
-                planetDao.insertList(it)
-                preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)
+        when(allPlanets){
+            is Result.Success -> {
+                allPlanets.data.list?.let {
+                    planetDao.insertList(it)
+                    preferenceManager.setDataTypeFetchedOnce(AppConstants.FILM_RESOURCE_NAME)
+                }
+                Result.Success(true)
             }
-
+            is Result.Error ->  Result.Error(allPlanets.exception)
         }
-        allPlanets
     }
 }
