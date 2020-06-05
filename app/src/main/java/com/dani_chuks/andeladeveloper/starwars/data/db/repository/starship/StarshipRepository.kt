@@ -22,7 +22,7 @@ interface StarshipRepository {
 
     suspend fun insertItemList(starShip: List<StarShip>)
 
-    suspend fun fetchAndSync(page: Int): Result<EntityList<StarShip>>
+    suspend fun fetchAndSync(page: Int)
 
     fun getStarshipsByPredicateAsFlow(predicate: DaoPredicate): Flow<List<StarShip>?>
 

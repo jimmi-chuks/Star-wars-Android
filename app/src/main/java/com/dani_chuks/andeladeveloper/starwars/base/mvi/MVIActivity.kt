@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 
@@ -22,13 +21,15 @@ abstract class MVIActivity<S, E, A, V : MVIViewmodel<S, E, A>> : AppCompatActivi
     abstract fun initViewModel()
 
     private fun subscribeToViewEvents() {
+        val mn = SupervisorJob() + Dispatchers.IO
+        val sc = CoroutineScope(mn)
         viewEvents().onEach { viewModel.onEvent(it) }
                 .launchIn(lifecycleScope)
     }
 
     @FlowPreview
     private fun subscribeToActions() {
-        viewModel.actionChannel.asFlow()
+        viewModel.actionFlow
                 .onEach { handleAction(it) }
                 .launchIn(lifecycleScope)
     }

@@ -62,17 +62,16 @@ constructor(private val remoteDataSource: StarshipRemoteDataSource,
         starShipDao.insertList(starShip)
     }
 
-    override suspend fun fetchAndSync(page: Int): Result<EntityList<StarShip>> = coroutineScope {
+    override suspend fun fetchAndSync(page: Int) = coroutineScope {
         val allStarships = remoteDataSource.getStarshipFromPage(page)
         println("fetch and sync star ships from page $page ==> $allStarships")
         if (allStarships is Result.Success) {
             allStarships.data.list?.let {
                 starShipDao.insertList(it)
-                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, HomeViewModel.firstPage + 1)
+                preferenceManager.setResourceNextPage(AppConstants.STARSHIP_RESOURCE_NAME, 2)
                 preferenceManager.setDataTypeFetchedOnce(AppConstants.STARSHIP_RESOURCE_NAME)
             }
         }
-        allStarships
     }
 
     override fun getStarshipsByPredicateAsFlow(predicate: DaoPredicate): Flow<List<StarShip>?> {

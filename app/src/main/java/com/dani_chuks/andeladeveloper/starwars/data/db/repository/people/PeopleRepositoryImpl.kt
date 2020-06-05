@@ -69,7 +69,7 @@ constructor(private val appDatabase: AppDatabase,
         peopleDao.insertList(people)
     }
 
-    override suspend fun fetchAndSync(page: Int): Result<EntityList<Person>> = coroutineScope {
+    override suspend fun fetchAndSync(page: Int) = coroutineScope {
         val peopleFetched = remoteDataSource.getPeopleFromPage(page)
         if (peopleFetched is Result.Success) {
             peopleFetched.data.list?.let {
@@ -78,6 +78,5 @@ constructor(private val appDatabase: AppDatabase,
                 preferenceManager.setDataTypeFetchedOnce(AppConstants.PERSON_RESOURCE_NAME)
             }
         }
-        peopleFetched
     }
 }

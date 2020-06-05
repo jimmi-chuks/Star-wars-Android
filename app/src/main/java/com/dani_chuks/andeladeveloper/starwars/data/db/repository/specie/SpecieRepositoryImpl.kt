@@ -66,16 +66,15 @@ constructor(private val appDatabase: AppDatabase,
         specieDao.insertList(t)
     }
 
-    override suspend fun fetchAndSync(page: Int): Result<EntityList<Specie>> = coroutineScope {
+    override suspend fun fetchAndSync(page: Int) = coroutineScope {
         val speciesFetched = remoteDataSource.getSpeciesFromPage(page)
         if (speciesFetched is Result.Success) {
             speciesFetched.data.list?.let {
                 specieDao.insertList(it)
-                preferenceManager.setResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME, HomeViewModel.firstPage + 1)
+                preferenceManager.setResourceNextPage(AppConstants.SPECIE_RESOURCE_NAME, 2)
                 preferenceManager.setDataTypeFetchedOnce(AppConstants.SPECIE_RESOURCE_NAME)
             }
         }
-        speciesFetched
     }
 
     override fun getSpeciesByPredicateAsFlow(predicate: DaoPredicate): Flow<List<Specie>?> {

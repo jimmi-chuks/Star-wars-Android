@@ -22,7 +22,7 @@ interface VehicleRepository {
 
     suspend fun insertItemList(vehicles: List<Vehicle>)
 
-    suspend fun fetchAndSync(page: Int) : Result<EntityList<Vehicle>>
+    suspend fun fetchAndSync(page: Int)
 
     fun getVehiclesByPredicateAsFlow(predicate: DaoPredicate): Flow<List<Vehicle>?>
 

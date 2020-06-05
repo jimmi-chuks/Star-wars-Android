@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 interface FilmRepository {
     suspend fun getFilmsByPredicate(predicate: DaoPredicate): List<Film>
 
-    suspend fun fetchAndSync(): Result<EntityList<Film>>
+    suspend fun fetchAndSync()
 
     suspend fun deleteAll(): Int
 

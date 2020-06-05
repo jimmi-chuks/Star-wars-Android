@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
 import com.dani_chuks.andeladeveloper.starwars.R
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIActivity
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.clicks
@@ -30,23 +31,23 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
 
     override fun initViewModel() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
+        viewModel.initState()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        initViewModel()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         binding.setLifecycleOwner(this)
-        initViewModel()
         binding.viewmodel = viewModel
-        viewModel.initState()
         subscribe()
-        viewModel.onEvent(HomeEvent.FetchAllItems)
+        viewModel.onEvent(HomeEvent.InitEvents)
     }
 
     override fun viewEvents(): Flow<HomeEvent> {
         val flows = listOf(
-                binding.showAllStarshipsButton.clicks().map { HomeEvent.ShowAllStarShipsEvent }
+                binding.showAllStarshipsButton.clicks().map { HomeEvent.ShowAllEvent(ItemModelType.STARSHIP) }
         )
         return flows.asFlow().flattenMerge(flows.size)
     }

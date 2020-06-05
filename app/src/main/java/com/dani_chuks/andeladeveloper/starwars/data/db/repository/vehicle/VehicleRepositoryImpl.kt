@@ -62,18 +62,17 @@ constructor(private val remoteDataSource: VehicleRemoteDataSource,
         vehicleDao.insertList(vehicles)
     }
 
-    override suspend fun fetchAndSync(page: Int): Result<EntityList<Vehicle>> = coroutineScope {
+    override suspend fun fetchAndSync(page: Int)= coroutineScope {
         val allVehicles = remoteDataSource.getVehicleFromPage(page)
         println("fetch and sync Vehicles from page $page ==> $allVehicles")
         if (allVehicles is Result.Success) {
             allVehicles.data.list?.let {
                 vehicleDao.insertList(it)
-                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, HomeViewModel.firstPage + 1)
+                preferenceManager.setResourceNextPage(AppConstants.VEHICLE_RESOURCE_NAME, 2)
                 preferenceManager.setDataTypeFetchedOnce(AppConstants.VEHICLE_RESOURCE_NAME)
             }
 
         }
-        allVehicles
     }
 
     override fun getVehiclesByPredicateAsFlow(predicate: DaoPredicate): Flow<List<Vehicle>?> {

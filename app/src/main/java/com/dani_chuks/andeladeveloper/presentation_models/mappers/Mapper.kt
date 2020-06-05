@@ -48,7 +48,7 @@ object Mapper {
     }
 
 
-    fun <Input> mapFims(inputs: List<Input>): ArrayList<FilmModel>? {
+    fun <Input> mapFilms(inputs: List<Input>): ArrayList<FilmModel>? {
         val outputList: ArrayList<FilmModel>
         val listType = object : TypeToken<ArrayList<FilmModel>>() {
 

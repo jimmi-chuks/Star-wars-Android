@@ -8,3 +8,5 @@ data class EntityList<T>(
         var previous: Any?,
         @SerializedName("results")
         var list: List<T>? = null)
+
+
