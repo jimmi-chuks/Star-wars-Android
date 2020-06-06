@@ -13,6 +13,7 @@ import com.dani_chuks.andeladeveloper.starwars.data.db.repository.vehicle.Vehicl
 import com.dani_chuks.andeladeveloper.starwars.data.models.entities.*
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -53,5 +54,4 @@ class HomeInteractor @Inject constructor(
     companion object {
         val ITEM_LIMIT = 10
     }
-
 }
