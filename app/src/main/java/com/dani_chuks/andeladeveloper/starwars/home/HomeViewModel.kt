@@ -19,7 +19,6 @@ class HomeViewModel @Inject constructor(store: HomeModelStore)
     override fun toIntent(event: HomeEvent): Intent<HomeState> =
             when(event){
                 InitEvents -> HomeIntents.Init
-                is FetchAllEvent -> HomeIntents.ObserveItems(event.type)
                 is ShowAllEvent -> HomeIntents.ShowAllIntent(event.itemModelType)
                 is ShowItemEvent -> HomeIntents.ShowItemIntent(event.itemURL, event.itemModelType)
             }
