@@ -50,8 +50,8 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
     }
 
     override fun handleAction(action: HomeViewAction) {
-        Log.e("PLOPP", " received Action: ${action.toString().substring(0, 12)}")
-        buildDialog()
+        Log.e("PLOPP", " received Action: ${action.toString()}")
+//        buildDialog()
     }
 
     fun buildDialog(){

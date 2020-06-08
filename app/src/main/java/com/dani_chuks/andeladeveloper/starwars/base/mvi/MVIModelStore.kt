@@ -14,13 +14,13 @@ abstract class ModelStore<S, A>() {
 
     abstract val startingState: S
 
-    abstract val scope: CoroutineScope
-
     abstract val iDispatcherProvider: IDispatcherProvider
 
     private val intents: ConflatedBroadcastChannel<Intent<S>> = ConflatedBroadcastChannel()
 
     private val actionChannel: BroadcastChannel<A> = BroadcastChannel(1)
+
+    val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private fun dispatchAction(action: A) {
         scope.launch(iDispatcherProvider.io) { actionChannel.send(action) }

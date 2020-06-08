@@ -36,6 +36,7 @@ import dagger.Provides
 import dagger.Reusable
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
 
 @Module
@@ -107,22 +108,10 @@ class AppModule {
 
     @Provides
     @Reusable
-    fun providesPersonRemoteDataSource(apiService: ApiService): PersonRemoteDataSource {
-        return PersonRemoteDataSource(apiService)
-    }
-
-    @Provides
-    @Reusable
     fun providesPeopleRepository(appDatabase: AppDatabase,
                                  personRemoteDataSource: PersonRemoteDataSource,
                                  preferenceManager: SharedPreferenceManager): PeopleRepository {
         return PeopleRepositoryImpl(appDatabase, personRemoteDataSource, preferenceManager)
-    }
-
-    @Provides
-    @Reusable
-    fun providesFilmRemoteDataSource(apiService: ApiService): FilmRemoteDataSource {
-        return FilmRemoteDataSource(apiService)
     }
 
     @Provides
@@ -133,11 +122,6 @@ class AppModule {
         return FilmRepositoryImpl(appDatabase, filmRemoteDataSource, preferenceManager)
     }
 
-    @Provides
-    @Reusable
-    fun providesPlanetRemoteDataSource(apiService: ApiService): PlanetRemoteDataSource {
-        return PlanetRemoteDataSource(apiService)
-    }
 
     @Provides
     @Reusable
@@ -147,12 +131,7 @@ class AppModule {
         return PlanetRepositoryImpl(planetRemoteDataSource, appDatabase, preferenceManager)
     }
 
-    @Provides
-    @Reusable
-    fun providesSpecieRemoteDataSource(apiService: ApiService): SpecieRemoteDataSource {
-        return SpecieRemoteDataSource(apiService)
-    }
-
+    @ExperimentalCoroutinesApi
     @Provides
     @Reusable
     fun providesSpecieRepository(appDatabase: AppDatabase,
@@ -163,22 +142,10 @@ class AppModule {
 
     @Provides
     @Reusable
-    fun providesVehicleRemoteDataSource(apiService: ApiService): VehicleRemoteDataSource {
-        return VehicleRemoteDataSource(apiService)
-    }
-
-    @Provides
-    @Reusable
     fun providesVehicleRepository(vehicleRemoteDataSource: VehicleRemoteDataSource,
                                   appDatabase: AppDatabase,
                                   preferenceManager: SharedPreferenceManager): VehicleRepository {
         return VehicleRepositoryImpl(vehicleRemoteDataSource, appDatabase, preferenceManager)
-    }
-
-    @Provides
-    @Reusable
-    fun providesStarshipRemoteDataSource(apiService: ApiService): StarshipRemoteDataSource {
-        return StarshipRemoteDataSource(apiService)
     }
 
     @Provides

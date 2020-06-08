@@ -13,9 +13,11 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class FilmRepositoryImpl @Inject constructor(val appDatabase: AppDatabase,
-                                             val filmRemoteDataSource: FilmRemoteDataSource,
-                                             private val preferenceManager: SharedPreferenceManager) : FilmRepository {
+class FilmRepositoryImpl @Inject constructor(
+        val appDatabase: AppDatabase,
+        val filmRemoteDataSource: FilmRemoteDataSource,
+        private val preferenceManager: SharedPreferenceManager
+) : FilmRepository {
 
     val filmDao = appDatabase.filmDao()
 
