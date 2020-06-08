@@ -3,7 +3,9 @@ package com.dani_chuks.andeladeveloper.starwars.home
 
 import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
 import com.dani_chuks.andeladeveloper.presentation_models.mappers.Mapper
-import com.dani_chuks.andeladeveloper.starwars.base.mvi.*
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.Intent
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.ModelStore
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.StoreResult
 import com.dani_chuks.andeladeveloper.starwars.di.IDispatcherProvider
 import com.dani_chuks.andeladeveloper.starwars.di.Result
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,11 +27,11 @@ class HomeModelStore @Inject constructor(
         val flows = listOf(
                 filterIsInstance<HomeIntents.ShowItemIntent>()
                         .map {
-                            storeAction<HomeState, HomeViewAction> { HomeViewAction.ShowItemAction(it.itemModelType, it.itemURL) }
+                            actionStoreResult { HomeViewAction.ShowItemAction(it.itemModelType, it.itemURL) }
                         },
                 filterIsInstance<HomeIntents.ShowAllIntent>()
                         .map {
-                            storeAction<HomeState, HomeViewAction> { HomeViewAction.ShowAllAction(it.itemModelType) }
+                            actionStoreResult { HomeViewAction.ShowAllAction(it.itemModelType) }
                         },
                 filterIsInstance<HomeIntents.Init>()
                         .flatMapMerge { initIntentProcessor },
@@ -53,9 +55,9 @@ class HomeModelStore @Inject constructor(
             launch(iDispatcherProvider.io) { interactor.loadPeopleRemote(firstPage) }
             launch(iDispatcherProvider.io) {
                 val result = interactor.loadPlanetRemote(firstPage)
-                if(result is Result.Error){
+                if (result is Result.Error) {
                     send(
-                            storeAction<HomeState, HomeViewAction> {
+                            actionStoreResult {
                                 HomeViewAction.ShowRemoteFetchError(ItemModelType.PLANET, result.exception)
                             }
                     )
@@ -82,14 +84,16 @@ class HomeModelStore @Inject constructor(
             .map { it?.let { Mapper.mapFilms(it) } }
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
-            .map { StoreResult<HomeState, HomeViewAction>(intent { copy(movies = it, moviesLoading = false) }) }
+            .map {
+                intentStoreResult { copy(movies = it, moviesLoading = false) }
+            }
 
     private val peopleFlow = interactor.loadPeople()
             .map { it?.let { Mapper.mapPeople(it) } }
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                StoreResult<HomeState, HomeViewAction>(intent { copy(people = it, peopleLoading = false) })
+                intentStoreResult { copy(people = it, peopleLoading = false) }
             }
 
     private val planetsFlow = interactor.loadPlanets()
@@ -97,7 +101,7 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                StoreResult<HomeState, HomeViewAction>(intent { copy(planets = it, planetsLoading = false) })
+                intentStoreResult { copy(planets = it, planetsLoading = false) }
             }
 
     private val speciesFlow = interactor.loadPeople()
@@ -105,7 +109,7 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                StoreResult<HomeState, HomeViewAction>(intent { copy(species = it, speciesLoading = false) })
+                intentStoreResult { copy(species = it, speciesLoading = false) }
             }
 
     private val vehicleFlow = interactor.loadVehicles()
@@ -113,14 +117,14 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                StoreResult<HomeState, HomeViewAction>(intent { copy(vehicles = it, vehiclesLoading = false) })
+                intentStoreResult { copy(vehicles = it, vehiclesLoading = false) }
             }
 
     private val starshipsFlow = interactor.loadStarships()
             .map { it?.let { Mapper.mapStarships(it) } }
             .filterNotNull()
             .map {
-                StoreResult<HomeState, HomeViewAction>(intent { copy(starships = it, starshipsLoading = false) })
+                intentStoreResult { copy(starships = it, starshipsLoading = false) }
             }
 
     companion object {
