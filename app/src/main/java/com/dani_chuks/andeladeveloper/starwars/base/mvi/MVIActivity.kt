@@ -1,7 +1,5 @@
 package com.dani_chuks.andeladeveloper.starwars.base.mvi
 
-import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
@@ -20,9 +18,19 @@ abstract class MVIActivity<S, E, A, V : MVIViewmodel<S, E, A>> : AppCompatActivi
 
     abstract fun initViewModel()
 
-    private fun subscribeToViewEvents() {
-        val mn = SupervisorJob() + Dispatchers.IO
-        val sc = CoroutineScope(mn)
+    private var scope: CoroutineScope? =  null
+
+    override fun onStop() {
+        super.onStop()
+        scope?.cancel()
+     }
+
+    override fun onStart() {
+        super.onStart()
+        scope = CoroutineScope( SupervisorJob() + Dispatchers.Main )
+    }
+
+    private fun propagateViewEvents() {
         viewEvents().onEach { viewModel.onEvent(it) }
                 .launchIn(lifecycleScope)
     }
@@ -30,12 +38,13 @@ abstract class MVIActivity<S, E, A, V : MVIViewmodel<S, E, A>> : AppCompatActivi
     @FlowPreview
     private fun subscribeToActions() {
         viewModel.actionFlow()
+                .filter { scope?.isActive ?: false }
                 .onEach { handleAction(it) }
                 .launchIn(lifecycleScope)
     }
 
     fun subscribe() {
-        subscribeToViewEvents()
+        propagateViewEvents()
         subscribeToActions()
     }
 }

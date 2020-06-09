@@ -36,7 +36,7 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
         super.onCreate(savedInstanceState)
         initViewModel()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         subscribe()
         viewModel.onEvent(HomeEvent.InitEvents)
