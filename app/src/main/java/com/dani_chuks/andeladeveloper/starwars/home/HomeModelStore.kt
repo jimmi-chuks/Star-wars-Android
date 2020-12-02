@@ -4,6 +4,7 @@ package com.dani_chuks.andeladeveloper.starwars.home
 import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
 import com.dani_chuks.andeladeveloper.presentation_models.mappers.Mapper
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.Intent
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIState
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.ModelStore
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.StoreResult
 import com.dani_chuks.andeladeveloper.starwars.di.IDispatcherProvider
@@ -19,11 +20,11 @@ import javax.inject.Inject
 class HomeModelStore @Inject constructor(
         private val interactor: HomeInteractor,
         override val iDispatcherProvider: IDispatcherProvider
-) : ModelStore<HomeState, HomeViewAction>() {
+) : ModelStore() {
 
     override val startingState: HomeState = HomeState()
 
-    override fun Flow<Intent<HomeState>>.intentProcessorFlow(): Flow<StoreResult<HomeState, HomeViewAction>> {
+    override fun Flow<Intent<*>>.intentProcessorFlow(): Flow<StoreResult> {
         val flows = listOf(
                 filterIsInstance<HomeIntents.ShowItemIntent>()
                         .map {
@@ -36,7 +37,9 @@ class HomeModelStore @Inject constructor(
                 filterIsInstance<HomeIntents.Init>()
                         .flatMapMerge { initIntentProcessor },
                 filterIsInstance<HomeIntents.RemoteUpdateError>()
-                        .map { StoreResult<HomeState, HomeViewAction>(it) }
+                        .map { it as? Intent<MVIState> }.filterNotNull()
+                        .map { StoreResult(it) }
+
         )
         return flows.asFlow().flattenMerge(flows.size)
 
@@ -48,8 +51,8 @@ class HomeModelStore @Inject constructor(
                 launch { observeAll().collect { send(it) } }
             }
 
-    private val remoteFetchProcessor: () -> Flow<StoreResult<HomeState, HomeViewAction>> = {
-        channelFlow<StoreResult<HomeState, HomeViewAction>> {
+    private val remoteFetchProcessor: () -> Flow<StoreResult> = {
+        channelFlow {
             launch(iDispatcherProvider.io) { interactor.loadFilmsRemote() }
             launch { interactor.loadPeopleRemote(firstPage) }
             launch(iDispatcherProvider.io) { interactor.loadPeopleRemote(firstPage) }
@@ -72,7 +75,7 @@ class HomeModelStore @Inject constructor(
         }
     }
 
-    val observeAll: () -> Flow<StoreResult<HomeState, HomeViewAction>> = {
+    val observeAll: () -> Flow<StoreResult> = {
         val flows =
                 listOf(
                         movieFlow, peopleFlow, planetsFlow, speciesFlow, starshipsFlow, vehicleFlow
@@ -85,7 +88,9 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                intentStoreResult { copy(movies = it, moviesLoading = false) }
+                intentStoreResult {
+                    val state =  this as HomeState
+                    state.copy(movies = it, moviesLoading = false) }
             }
 
     private val peopleFlow = interactor.loadPeople()
@@ -93,7 +98,10 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                intentStoreResult { copy(people = it, peopleLoading = false) }
+                intentStoreResult {
+                    this as HomeState
+                    copy(people = it, peopleLoading = false)
+                }
             }
 
     private val planetsFlow = interactor.loadPlanets()
@@ -101,7 +109,9 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                intentStoreResult { copy(planets = it, planetsLoading = false) }
+                intentStoreResult {
+                    this as HomeState
+                    copy(planets = it, planetsLoading = false) }
             }
 
     private val speciesFlow = interactor.loadPeople()
@@ -109,7 +119,10 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                intentStoreResult { copy(species = it, speciesLoading = false) }
+                intentStoreResult {
+                    this as HomeState
+                    copy(species = it, speciesLoading = false)
+                }
             }
 
     private val vehicleFlow = interactor.loadVehicles()
@@ -117,14 +130,18 @@ class HomeModelStore @Inject constructor(
             .filterNotNull()
             .flowOn(iDispatcherProvider.io)
             .map {
-                intentStoreResult { copy(vehicles = it, vehiclesLoading = false) }
+                intentStoreResult {
+                    this as HomeState
+                    copy(vehicles = it, vehiclesLoading = false)
+                }
             }
 
     private val starshipsFlow = interactor.loadStarships()
             .map { it?.let { Mapper.mapStarships(it) } }
             .filterNotNull()
             .map {
-                intentStoreResult { copy(starships = it, starshipsLoading = false) }
+                intentStoreResult { this as HomeState
+                    copy(starships = it, starshipsLoading = false) }
             }
 
     companion object {

@@ -6,10 +6,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
 import com.dani_chuks.andeladeveloper.starwars.R
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIAction
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIActivity
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.clicks
 import com.dani_chuks.andeladeveloper.starwars.databinding.ActivityHomeBinding
 import com.dani_chuks.andeladeveloper.starwars.util.DialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjection
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -19,7 +21,7 @@ import javax.inject.Inject
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewModel>() {
+class HomeActivity : MVIActivity() {
 
     @Inject
     lateinit var viewModelFactory: HomeViewModelFactory
@@ -28,7 +30,12 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
 
     override fun initViewModel() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(HomeViewModel::class.java)
-        viewModel.initState()
+        viewModel.collectState()
+    }
+
+    override fun onResume() {
+        Log.e("PLOPP", "Activity onResume")
+        super.onResume()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,8 +56,15 @@ class HomeActivity : MVIActivity<HomeState, HomeEvent, HomeViewAction, HomeViewM
         return flows.asFlow().flattenMerge(flows.size)
     }
 
-    override fun handleAction(action: HomeViewAction) {
-        Log.e("PLOPP", " received Action: ${action.toString()}")
+    override fun handleAction(action: MVIAction) {
+        when(action as? HomeViewAction){
+            is HomeViewAction.ShowAllAction -> TODO()
+            is HomeViewAction.ShowItemAction -> TODO()
+            is HomeViewAction.ShowRemoteFetchError -> TODO()
+            null -> Log.d("PLOPP", "Non home view action received in home activity")
+        }
+        Log.e("PLOPP", " received Action: $action")
+//        Snackbar.make(window.decorView.rootView, "message", Snackbar.LENGTH_SHORT).show();
 //        buildDialog()
     }
 

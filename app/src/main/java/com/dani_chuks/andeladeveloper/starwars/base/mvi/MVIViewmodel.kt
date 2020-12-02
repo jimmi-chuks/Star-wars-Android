@@ -12,28 +12,19 @@ import kotlinx.coroutines.flow.onEach
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class MVIViewmodel<S, E, A> : ViewModel() {
+abstract class MVIViewmodel : ViewModel() {
 
-    private val _viewState: MutableLiveData<S> = MutableLiveData()
-
-    val viewState: LiveData<S>
-        get() = _viewState
-
-    abstract val modelStore: ModelStore<S, A>
-
-
-    abstract fun toIntent(event: E): Intent<S>
+    abstract val modelStore: ModelStore
+    abstract fun toIntent(event: MVIEvent): Intent<*>?
 
     fun actionFlow() = modelStore.actions()
 
-    fun onEvent(event: E){
-        modelStore.process(toIntent(event))
-    }
+    fun stateFlow() = modelStore.state()
 
-    fun initState() {
-        modelStore.state()
-                .onEach { _viewState.postValue(it) }
-                .launchIn(viewModelScope)
+    fun onEvent(event: MVIEvent){
+        toIntent(event)?.let{
+            modelStore.process(it)
+        }
     }
 
     override fun onCleared() {

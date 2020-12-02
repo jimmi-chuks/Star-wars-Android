@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,20 +13,20 @@ import kotlinx.coroutines.flow.*
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class MVIFragment<S, E, A, V : MVIViewmodel<S, E, A>> : Fragment() {
+abstract class MVIFragment: Fragment() {
 
-    abstract var viewModel: V
+    abstract var viewModel: MVIViewmodel
 
-    abstract fun viewEvents(): Flow<E>
+    abstract fun viewEvents(): Flow<*>
 
-    abstract fun handleAction(action: A)
+    abstract fun handleAction(action: MVIAction)
 
     abstract fun initViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
-        viewModel.initState()
+//        viewModel.initState()
     }
     
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -39,7 +40,7 @@ abstract class MVIFragment<S, E, A, V : MVIViewmodel<S, E, A>> : Fragment() {
     }
 
     private fun subscribeToViewEvents() {
-        viewEvents()
+        viewEvents().filterIsInstance<MVIEvent>()
                 .onEach { viewModel.onEvent(it) }
                 .launchIn(viewLifecycleOwner.lifecycleScope)
     }
@@ -47,6 +48,7 @@ abstract class MVIFragment<S, E, A, V : MVIViewmodel<S, E, A>> : Fragment() {
     @FlowPreview
     private fun subscribeToActions() {
         viewModel.actionFlow()
+                .filter { lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) || it.important}
                 .onEach { handleAction(it) }
                 .launchIn(viewLifecycleOwner.lifecycleScope)
     }

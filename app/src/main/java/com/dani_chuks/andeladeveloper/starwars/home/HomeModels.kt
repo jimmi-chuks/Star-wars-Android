@@ -3,6 +3,9 @@ package com.dani_chuks.andeladeveloper.starwars.home
 import com.dani_chuks.andeladeveloper.presentation_models.ItemModelType
 import com.dani_chuks.andeladeveloper.presentation_models.MainModels.*
 import com.dani_chuks.andeladeveloper.starwars.base.mvi.Intent
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIAction
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIEvent
+import com.dani_chuks.andeladeveloper.starwars.base.mvi.MVIState
 import java.lang.Exception
 
 data class HomeState(
@@ -19,9 +22,9 @@ data class HomeState(
         val planets: List<PlanetModel> = emptyList(),
         val vehicles: List<VehicleModel> = emptyList(),
         val starships: List<StarshipModel> = emptyList()
-)
+) : MVIState()
 
-sealed class HomeViewAction {
+sealed class HomeViewAction : MVIAction()  {
     data class ShowAllAction(val itemModelType: ItemModelType) : HomeViewAction()
 
     data class ShowItemAction(val type: ItemModelType, val itemURL: String) : HomeViewAction()
@@ -30,7 +33,7 @@ sealed class HomeViewAction {
 }
 
 
-sealed class HomeEvent {
+sealed class HomeEvent : MVIEvent() {
     object InitEvents : HomeEvent()
 
     data class ShowAllEvent(val itemModelType: ItemModelType) : HomeEvent()

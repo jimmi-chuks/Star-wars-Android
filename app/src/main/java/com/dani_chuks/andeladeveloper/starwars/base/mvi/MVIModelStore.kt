@@ -4,82 +4,90 @@ import com.dani_chuks.andeladeveloper.starwars.di.IDispatcherProvider
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.scan
 
-data class StoreResult<S, A>(val intent: Intent<S>, val action: A? = null)
+data class StoreResult(val intent: Intent<MVIState>, val action: MVIAction? = null)
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-abstract class ModelStore<S, A>() {
+abstract class ModelStore {
 
-    abstract val startingState: S
+    abstract val startingState: MVIState
 
     abstract val iDispatcherProvider: IDispatcherProvider
 
-    private val intents: ConflatedBroadcastChannel<Intent<S>> = ConflatedBroadcastChannel()
+    private val intents: ConflatedBroadcastChannel<Intent<*>> = ConflatedBroadcastChannel()
 
-    private val actionChannel: BroadcastChannel<A> = BroadcastChannel(1)
+    private val actionChannel: BroadcastChannel<MVIAction> = BroadcastChannel(1)
 
     val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private fun dispatchAction(action: A) {
+    private fun dispatchAction(action: MVIAction) {
         scope.launch(iDispatcherProvider.io) { actionChannel.send(action) }
     }
 
-    fun clear(){
-        if(scope.isActive) {
-            scope.cancel()
+    fun process(intent: Intent<*>) {
+        (intent as? Intent<*>)?.let {
+            scope.launch { intents.send(intent) }
         }
     }
-
-    fun process(intent: Intent<S>) = scope.launch { intents.send(intent) }
-
-    abstract fun Flow<Intent<S>>.intentProcessorFlow(): Flow<StoreResult<S, A>>
 
     fun actions() = actionChannel.asFlow()
 
     fun state() = intents.asFlow().intentProcessorFlow()
-            .scan(startingState, { oldstate, store ->
+            .scan(startingState, { oldstate: MVIState, store ->
                 store.action?.let { dispatchAction(it) }
                 store.intent.reduce(oldstate)
             })
 
-    fun actionStoreResult(block: () -> A) = storeAction<S,A>(block)
+    fun clear() {
+        if (scope.isActive) {
+            scope.cancel()
+        }
+    }
 
-    fun intentStoreResult(block: S.() -> S) = storeIntent<S,A> {  block() }
+//    abstract fun intentProcessorFlow2(): Flow<StoreResult>
 
-    fun intentActionStoreUpdate(intentBlock: S.() -> S, actionBlock: (() -> A)?) =
-            StoreResult<S, A>(intent<S> { intentBlock() }, actionBlock?.invoke())
+    abstract fun Flow<Intent<*>>.intentProcessorFlow(): Flow<StoreResult>
 
-    fun actionFromStateStoreResult(intentBlock: S.() -> S, actionBlock: (S) -> A) =
-            storeActionFromState<S,A>(intentBlock, actionBlock)
+    fun actionStoreResult(block: () -> MVIAction) = storeAction(block)
+
+    fun intentStoreResult(block: MVIState.() -> MVIState) = storeIntent { block() }
 
 
     /**
      * Creates a Store Result having an intent where the reduce function is passed as lambda
      * and dispatches no action
      */
-    private fun <S, A> storeIntent(block: S.() -> S): StoreResult<S, A> =
+    private fun storeIntent(block: MVIState.() -> MVIState): StoreResult =
             StoreResult(intent { block() })
-
-    /**
-     * Creates a Store Result having an intent where the reduce function makes no change in state
-     * and dispatches an action obtained by applying the block function on the state to produce an action
-     */
-    private fun <S, A> storeActionFromState(intentBlock: S.() -> S, actionBlock: (S) -> A): StoreResult<S, A> {
-        var state: S? = null
-        val inn = intent<S> {
-            state = this
-            intentBlock(this)
-        }
-        return StoreResult(inn, state?.let{ actionBlock(it) })
-    }
 
     /**
      * Creates a Store Result having an intent where the reduce function makes no change in state
      * and dispatches an action obtained by applying the block function passed as a parameter
      */
-    private fun <S, A> storeAction(block: () -> A): StoreResult<S, A> {
+    private fun storeAction(block: () -> MVIAction): StoreResult {
         return StoreResult(noChange(), block())
     }
+
+//    /**
+//     * Creates a Store Result having an intent where the reduce function makes no change in state
+//     * and dispatches an action obtained by applying the block function on the state to produce an action
+//     */
+//    private fun storeActionFromState(intentBlock: MVIState.() -> MVIState, actionBlock: (MVIState) -> MVIAction): StoreResult {
+//        var state: MVIState? = null
+//        val inn = intent<MVIState> {
+//            state = this
+//            intentBlock(this)
+//        }
+//        return StoreResult inn, state?.let{ actionBlock(it) })
+//    }
+//
+//        fun actionFromStateStoreResult(intentBlock: MVIState.() -> MVIState, actionBlock: (MVIState) -> MVIAction) =
+//            storeActionFromState(intentBlock, actionBlock)
+//
+//    fun intentActionStoreUpdate(intentBlock: MVIState.() -> MVIState, actionBlock: (() -> A)?) =
+//            StoreResultintent<S> { intentBlock() }, actionBlock?.invoke())
 }
